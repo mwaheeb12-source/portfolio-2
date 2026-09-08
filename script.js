@@ -704,7 +704,7 @@ projects.forEach((card) => {
 
 
 // =====================================================================
-// 3D ROBOT IN HERO SECTION
+// SCROLL-LINKED 3D COMPANION
 // =====================================================================
 function initRobot() {
   const container = document.getElementById('robot-container');
@@ -714,12 +714,19 @@ function initRobot() {
   const scene = new THREE.Scene();
   
   // Set up camera
-  const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
   camera.position.z = 18; // Pulled back slightly for bigger robot
 
   // Set up renderer
-  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+  } catch {
+    // Keep the portfolio usable when WebGL is unavailable.
+    container.hidden = true;
+    return;
+  }
+  document.body.classList.add('has-scroll-companion');
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   container.appendChild(renderer.domElement);
 
@@ -743,7 +750,7 @@ function initRobot() {
     metalness: 0.2 
   });
   const blueMaterial = new THREE.MeshStandardMaterial({
-    color: 0x0055ff, 
+    color: 0x8b5cf6,
     roughness: 0.2,
     metalness: 0.6
   });
@@ -936,98 +943,124 @@ function initRobot() {
   dirLight.position.set(5, 5, 5);
   scene.add(dirLight);
 
-  const backLight = new THREE.DirectionalLight(0x00aaff, 1.5);
+  const backLight = new THREE.DirectionalLight(0x8b5cf6, 1.5);
   backLight.position.set(-5, 5, -5);
   scene.add(backLight);
 
-  // Base position and scaling of the whole robot
-  mainRobotGroup.scale.set(0.65, 0.65, 0.65);
-  mainRobotGroup.position.y = 1.0;
+  mainRobotGroup.scale.setScalar(0.65);
+  mainRobotGroup.position.y = 0.6;
 
-  // Mouse tracking
-  let mouse = new THREE.Vector2(0, 0);
-  
+  const desktop = window.matchMedia('(min-width: 1200px) and (min-height: 600px)');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const hero = document.getElementById('home');
+  const mouse = new THREE.Vector2(0, 0);
+  let targetProgress = 0;
+  let progress = 0;
+  let previousFrame = 0;
+  let layoutDirty = true;
+  let frame = 0;
+  let isRobotVisible = true;
+  let hasContext = true;
+
+  function updateProgress() {
+    const distance = document.documentElement.scrollHeight - window.innerHeight;
+    targetProgress = distance > 0 ? Math.max(0, Math.min(1, window.scrollY / distance)) : 0;
+    wake();
+  }
+
+  function resizeCompanion() {
+    // Moving out of the page wrapper prevents transformed ancestors from trapping fixed positioning.
+    (desktop.matches ? document.body : hero).appendChild(container);
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+    camera.aspect = width / Math.max(height, 1);
+    // Fit the entire robot, including its waving arm, inside the reserved viewport.
+    camera.position.z = Math.max(12, 5.5 / Math.max(camera.aspect, 0.1));
+    camera.updateProjectionMatrix();
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    layoutDirty = false;
+    updateProgress();
+  }
+
+  function wake() {
+    if (!frame && !document.hidden && hasContext) frame = requestAnimationFrame(animate);
+  }
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  window.addEventListener('resize', () => { layoutDirty = true; wake(); }, { passive: true });
+  desktop.addEventListener('change', () => { layoutDirty = true; wake(); });
+  reducedMotion.addEventListener('change', wake);
+  document.addEventListener('visibilitychange', wake);
   window.addEventListener('mousemove', (event) => {
+    if (reducedMotion.matches) return;
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    wake();
+  }, { passive: true });
+  renderer.domElement.addEventListener('webglcontextlost', (event) => {
+    event.preventDefault();
+    hasContext = false;
+    container.style.visibility = 'hidden';
   });
-
-  window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.domElement.addEventListener('webglcontextrestored', () => {
+    hasContext = true;
+    layoutDirty = true;
+    wake();
   });
+  if ('ResizeObserver' in window) {
+    new ResizeObserver(updateProgress).observe(document.getElementById('page-wrapper'));
+  }
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(([entry]) => {
+      isRobotVisible = entry.isIntersecting;
+      if (isRobotVisible) wake();
+    }).observe(container);
+  }
 
   // Waving Animation State
   let isWaving = false;
   let waveStartTime = 0;
   window.triggerRobotWave = () => {
+    if (reducedMotion.matches) return;
     isWaving = true;
     waveStartTime = clock.getElapsedTime();
+    wake();
   };
 
-  // Animation Loop
+  // Exponential easing keeps the scroll rhythm consistent on 60 Hz and 120 Hz screens.
   const clock = new THREE.Clock();
-  let currentTarget = new THREE.Vector3(0, 0, 15);
-  let isRobotVisible = true;
+  function animate(timestamp = 0) {
+    frame = 0;
+    if (document.hidden || !hasContext) return;
+    if (layoutDirty) resizeCompanion();
+    const dt = Math.min((timestamp - previousFrame) / 1000 || 1 / 60, 0.05);
+    previousFrame = timestamp;
+    const easing = 1 - Math.exp(-7 * dt);
+    progress += (targetProgress - progress) * easing;
+    const still = reducedMotion.matches;
+    const time = still ? 0 : clock.getElapsedTime();
+    // The rail has its own horizontal space; motion is bounded below navigation and above chat FABs.
+    const travel = Math.max(0, window.innerHeight - container.clientHeight - 220);
+    const y = desktop.matches ? 110 + (still ? 0 : progress * travel) : 0;
+    container.style.transform = `translate3d(0, ${y}px, 0)`;
 
-  if ('IntersectionObserver' in window) {
-    const robotObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        isRobotVisible = entry.isIntersecting;
-      });
-    }, { threshold: 0 });
-    robotObserver.observe(container);
-  }
+    const bounds = container.getBoundingClientRect();
+    const chat = document.getElementById('robotChatUI');
+    const chatBounds = chat?.getBoundingClientRect();
+    const overlapsChat = chat?.classList.contains('active') && chatBounds &&
+      bounds.left < chatBounds.right + 16 && bounds.right > chatBounds.left - 16 &&
+      bounds.top < chatBounds.bottom + 16 && bounds.bottom > chatBounds.top - 16;
+    const menuOpen = document.getElementById('mobileMenu')?.classList.contains('open');
+    container.style.visibility = overlapsChat || menuOpen ? 'hidden' : 'visible';
 
-  function animate() {
-    requestAnimationFrame(animate);
-    if (!isRobotVisible) return;
-    
-    const time = clock.getElapsedTime();
-
-    // Interactive Mouse Repulsion & Floating
-    let targetRobotX = 0;
-    let targetRobotY = 1.0 + Math.sin(time * 2) * 0.15; // base floating
-
-    // Calculate approximate mouse world position
-    const worldMouseX = mouse.x * 12;
-    const worldMouseY = mouse.y * 12;
-
-    const dx = mainRobotGroup.position.x - worldMouseX;
-    const dy = mainRobotGroup.position.y - worldMouseY;
-    const dist = Math.sqrt(dx*dx + dy*dy);
-
-    const repulsionRadius = 4.0; // Radius to start moving away
-    if (dist < repulsionRadius && dist > 0.01) {
-      const force = (repulsionRadius - dist) / repulsionRadius; // 0 to 1 strength
-      targetRobotX += (dx / dist) * force * 4.0; // Push away horizontally
-      targetRobotY += (dy / dist) * force * 4.0; // Push away vertically
-    }
-
-    // Smoothly interpolate the robot's actual position towards the target
-    mainRobotGroup.position.x += (targetRobotX - mainRobotGroup.position.x) * 0.1;
-    mainRobotGroup.position.y += (targetRobotY - mainRobotGroup.position.y) * 0.1;
-
-    // Add some gentle sway to the body
-    bodyGroup.rotation.z = Math.sin(time * 1.5) * 0.02;
-
-    // Body rotates slightly towards cursor
-    bodyGroup.rotation.y = (mouse.x * Math.PI) * 0.1;
-    bodyGroup.rotation.x = (mouse.y * Math.PI) * 0.05;
-
-    // Target where the mouse is in 3D
-    const targetX = mouse.x * 12;
-    const targetY = mouse.y * 12;
-    const targetZ = 15; 
-    
-    // Smoothly interpolate current rotation towards the target
-    currentTarget.x += (targetX - currentTarget.x) * 0.05;
-    currentTarget.y += (targetY - currentTarget.y) * 0.05;
-    currentTarget.z += (targetZ - currentTarget.z) * 0.05;
-    
-    // Only the head fully tracks the cursor!
-    headGroup.lookAt(currentTarget);
+    mainRobotGroup.position.x = 0;
+    mainRobotGroup.position.y = 0.6 + (still ? 0 : Math.sin(time * 1.4) * 0.09);
+    mainRobotGroup.rotation.y = still ? -0.18 : Math.sin(progress * Math.PI * 2) * 0.55;
+    mainRobotGroup.rotation.z = still ? 0 : Math.sin(progress * Math.PI * 4) * 0.035;
+    bodyGroup.rotation.y = still ? 0 : mouse.x * 0.12;
+    headGroup.rotation.y = still ? 0 : mouse.x * 0.22;
+    headGroup.rotation.x = still ? 0 : -mouse.y * 0.1;
+    if (still) isWaving = false;
 
     // Waving logic
     if (isWaving) {
@@ -1051,9 +1084,15 @@ function initRobot() {
       rightLowerArmGroup.rotation.x *= 0.9;
     }
 
-    renderer.render(scene, camera);
+    if (isRobotVisible && !overlapsChat && !menuOpen) renderer.render(scene, camera);
+    if (!still && isRobotVisible) wake();
   }
-  animate();
+  const chat = document.getElementById('robotChatUI');
+  if (chat) new MutationObserver(wake).observe(chat, { attributes: true, attributeFilter: ['class'] });
+  const menu = document.getElementById('mobileMenu');
+  if (menu) new MutationObserver(wake).observe(menu, { attributes: true, attributeFilter: ['class'] });
+  resizeCompanion();
+  wake();
 }
 
 // Initialize the robot

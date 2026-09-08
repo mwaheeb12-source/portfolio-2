@@ -2725,3 +2725,45 @@ ul {
 #chatInput, #chat-input, .chat-input-form input {
   color: #000 !important;
 }
+
+
+/* Scroll companion: reserve actual layout space, never overlay readable content. */
+.has-scroll-companion #robot-container {
+  position: relative;
+  inset: auto;
+  width: min(280px, 85vw);
+  height: 280px;
+  flex: 0 0 280px;
+  opacity: 1;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+  contain: layout paint;
+}
+#robot-container canvas { display: block; width: 100%; height: 100%; }
+#robot-container[hidden] { display: none; }
+.has-scroll-companion .hero {
+  height: auto;
+  min-height: 100svh;
+  padding-top: 110px;
+  padding-bottom: 100px;
+  gap: 24px;
+}
+.has-scroll-companion .hero__content { flex: 0 0 auto; padding-inline: 24px; }
+@media (min-width: 1200px) and (min-height: 600px) {
+  body.has-scroll-companion { padding-right: 220px; }
+  .has-scroll-companion #robot-container {
+    position: fixed;
+    top: 0;
+    right: 16px;
+    left: auto;
+    width: 188px;
+    height: 280px;
+    z-index: 8;
+    will-change: transform;
+  }
+  .has-scroll-companion .hero { height: 100svh; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .has-scroll-companion #robot-container { will-change: auto; }
+}
