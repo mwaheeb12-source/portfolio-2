@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wibi - Full-Stack Developer & Voice Engineer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="styles.css?v=42">
+</head>
+
+<body>
+  <div id="page-wrapper" style="width: 100%; max-width: 100%; overflow-x: hidden; position: relative;">
+  <!-- 3D Scroll-Driven Volumetric Canvas -->
+  <canvas id="particles"></canvas>
+
+  <!-- Cinematic Crosshairs -->
+  <div class="crosshair ch-1">+</div>
+  <div class="crosshair ch-2">+</div>
+  <div class="crosshair ch-3">+</div>
+  <div class="crosshair ch-4">+</div>
+
+  <!-- Scroll progress bar -->
+  <div class="scroll-progress">
+    <div class="scroll-progress__bar" id="scrollBar"></div>
+  </div>
+
+
+  <!-- NAVIGATION -->
+  <nav class="nav" id="nav">
+    <div class="nav__inner">
+      <a href="#home" class="nav__logo"><span>&lt;</span>Wibi<span>/&gt;</span></a>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="#home" class="nav__link active magnetic" data-nav style="display:inline-block">home</a></li>
+        <li><a href="#profile" class="nav__link magnetic" data-nav style="display:inline-block">profile</a></li>
+        <li><a href="#skills" class="nav__link magnetic" data-nav style="display:inline-block">skills</a></li>
+        <li><a href="#work" class="nav__link magnetic" data-nav style="display:inline-block">work</a></li>
+        <li><a href="#sites" class="nav__link magnetic" data-nav style="display:inline-block">sites</a></li>
+        <li><a href="#timeline" class="nav__link magnetic" data-nav style="display:inline-block">journey</a></li>
+        <li><a href="#contact" class="nav__link magnetic" data-nav style="display:inline-block">contact</a></li>
+      </ul>
+      <button id="themeToggle" class="theme-toggle magnetic" aria-label="Toggle dark mode" style="background:transparent; border:none; font-size:1.2rem; cursor:pointer; color:var(--text); padding:10px; display:inline-block;">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+      <a href="#contact" class="btn btn--primary magnetic nav__cta"
+        style="color:white; background:var(--purple); border:none; display:inline-block">say hello</a>
+      <button class="nav__burger" id="burger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- MOBILE FULLSCREEN MENU -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#home"     class="mobile-nav-link">Home</a>
+    <a href="#profile"  class="mobile-nav-link">Profile</a>
+    <a href="#skills"   class="mobile-nav-link">Skills</a>
+    <a href="#work"     class="mobile-nav-link">Work</a>
+    <a href="#sites"    class="mobile-nav-link">Sites</a>
+    <a href="#timeline" class="mobile-nav-link">Journey</a>
+    <a href="#contact"  class="mobile-nav-link">Contact</a>
+    <div class="mobile-menu__footer">
+      <a href="#contact" class="btn btn--primary" style="color:white;background:var(--purple);border:none;">Say Hello</a>
+    </div>
+  </div>
+
+  <!-- HERO (Lusion Push-Through Style) -->
+  <header class="hero" id="home">
+    <div id="robot-container"
+      style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:5; pointer-events:none;"></div>
+    <div class="hero__content" id="heroContent" style="transform: none; animation: none;">
+      <h2 class="hero__typewriter"><span id="typewriterText"></span><span class="typewriter-cursor"></span></h2>
+    </div>
+
+    <!-- Geo Shape: Octahedron -->
+    <div class="geo-shape geo-octahedron" style="top: 20%; right: 10%;">
+      <div class="geo-face"></div><div class="geo-face"></div><div class="geo-face"></div><div class="geo-face"></div>
+      <div class="geo-face"></div><div class="geo-face"></div><div class="geo-face"></div><div class="geo-face"></div>
+    </div>
+
+    <a href="#profile" class="hero__scroll" aria-label="Scroll down">
+      <span>scroll to explore</span>
+    </a>
+  </header>
+
+  <!-- Water Surface Boundary -->
+  <div class="water-surface"></div>
+
+  <main>
+    
+    <!-- PROFILE SECTION -->
+    <section class="section profile-section" id="profile" style="margin-bottom: 25vh;">
+      <!-- Geo Shape: Torus (Ring) -->
+      <div class="geo-shape geo-ring" style="bottom: 10%; left: 5%;">
+        <div class="geo-ring-circle"></div><div class="geo-ring-circle"></div><div class="geo-ring-circle"></div>
+      </div>
+      <h2 class="profile-bg-text" id="profileBgText">PROFILE</h2>
+      <div class="profile-layout">
+        <!-- Bottom Left Info -->
+        <div class="profile-info reveal">
+          <div class="profile-index">01 / PROFILE</div>
+          <h3 class="profile-name">WIBI</h3>
+          <div class="profile-title">FULL-STACK DEVELOPER &amp;<br>VOICE ENGINEER</div>
+        </div>
+        <!-- Central 3D Hologram Wrapper -->
+        <div class="profile-hologram reveal" id="profileHologramContainer">
+          <!-- The 3D hologram canvas will attach over this space dynamically via Three.js -->
+        </div>
+        <!-- Right Side Text -->
+        <div class="profile-desc reveal">
+          <div class="skill-chip"><i class="fa-solid fa-robot"></i><span>LLMs/AI</span></div>
+          <div class="skill-chip"><i class="fa-brands fa-css3-alt"></i><span>Tailwind</span></div>
+        </div>
+
+        <div class="skills__bars reveal" id="skillsHologramContainer" style="position: relative; min-height: 400px;">
+          <!-- Content completely driven by 3D particles -->
+        </div>
+      </div>
+    </section>
+
+    <!-- CLARION FLAGSHIP -->
+    <section class="section" id="clarion">
+      <!-- Geo Shape: Cube -->
+      <div class="geo-shape geo-cube" style="top: 30%; right: 5%;">
+        <div class="geo-face"></div><div class="geo-face"></div><div class="geo-face"></div>
+        <div class="geo-face"></div><div class="geo-face"></div><div class="geo-face"></div>
+      </div>
+
+      <p class="section__label reveal">// 03 — flagship.ts</p>
+      <div class="about">
+        <div class="about__body">
+          <h2 class="elastic-heading">Clarion <span class="text-grad">Platform.</span></h2>
+          <p class="smoky-desc">
+            A multi-tenant contact-center platform built from the ground up. Features include an agent cockpit, live
+            transcription, dialplan manager, SIP endpoints/gateways, campaigns, workflow designer, and full Arabic RTL
+            support.
+          </p>
+          <div class="project__stack reveal" style="margin-top: 20px;">
+            <span>FreeSWITCH</span><span>Asterisk</span><span>React</span><span>Node</span><span>PostgreSQL</span><span>Redis</span><span>WebSockets</span>
+          </div>
+        </div>
+        <div class="about__visual reveal">
+          <div class="about__frame" style="width: 100%; aspect-ratio: 16/9; height: auto;">
+            <img src="./clarion.png" alt="Clarion Dashboard" id="clarionImg"
+              style="width: 100%; height: 100%; object-fit: cover; border-radius: 60px 0 60px 0;">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ALL PROJECTS -->
+    <section class="section section--alt horizontal-scroll-wrapper" id="work">
+      <div class="horizontal-sticky">
+        <div class="section-header">
+          <!-- Geo Shape: Icosahedron (approximated) -->
+          <div class="geo-shape geo-icosahedron" style="top: -50px; left: -10%;">
+            <div class="geo-face"></div><div class="geo-face"></div><div class="geo-face"></div><div class="geo-face"></div>
+          </div>
+          <span class="section__label reveal">// 04 — projects.map()</span>
+          <h2 class="section__title smoky-heading">Featured <span class="text-grad">Projects.</span></h2>
+        </div>
+        <div class="filters reveal">
+          <button class="filter active magnetic" data-filter="all" style="display:inline-block">All</button>
+          <button class="filter magnetic" data-filter="voice" style="display:inline-block">WebRTC / Telephony</button>
+          <button class="filter magnetic" data-filter="web3d" style="display:inline-block">ThreeJS</button>
+          <button class="filter magnetic" data-filter="saas" style="display:inline-block">Full Stack & AI</button>
+        </div>
+
+        <div class="projects-track-wrapper">
+          <div class="projects" id="projectGrid">
+        <!-- PROJECTS CONTENT -->
+        <article class="project reveal" data-cat="voice">
+          <div class="project__body">
+            <span class="project__tag">Voice/Telephony</span>
+            <h3>Clarion Platform</h3>
+            <p>Multi-tenant contact-center platform: agent cockpit, live transcription, dialplan manager.</p>
+            <div class="project__stack"><span>FreeSWITCH</span><span>React</span><span>Node</span></div>
+          </div>
+        </article>
+        <article class="project reveal" data-cat="voice">
+          <div class="project__body">
+            <span class="project__tag">Voice/Telephony</span>
+            <h3>Wholesale VoIP Transit</h3>
+            <p>Handling 5,000+ concurrent calls via robust routing.</p>
+            <div class="project__stack"><span>Kamailio SBCs</span><span>RTPEngine</span></div>
+          </div>
+        </article>
+        <article class="project reveal" data-cat="voice">
+          <div class="project__body">
+            <span class="project__tag">Voice/Telephony</span>
+            <h3>Voice AI Eligibility Engine</h3>
+            <p>Sub-600ms latency voice agent.</p>
+            <div class="project__stack"><span>Deepgram STT</span><span>Llama-3</span><span>Cartesia TTS</span></div>
+          </div>
+        </article>
+        <article class="project reveal" data-cat="voice">
+          <div class="project__body">
+            <span class="project__tag">Voice/Telephony</span>
+            <h3>Twilio Phone</h3>
+            <p>Browser calling interface.</p>
+            <div class="project__stack"><span>Twilio Voice SDK</span><span>Supabase</span></div>
+          </div>
+        </article>
+        <article class="project reveal" data-cat="voice">
+          <div class="project__body">
+            <span class="project__tag">Voice/Telephony</span>
+            <h3>FreeSWITCH Infrastructure</h3>
+            <p>WebSocket bridging and Event Socket Library integrations.</p>
+            <div class="project__stack"><span>Docker</span><span>mod_audio_pipe</span><span>ESL</span></div>
+          </div>
+        </article>
+
+        <!-- SAAS/AI -->
+        <article class="project reveal" data-cat="saas">
+          <div class="project__body">
+            <span class="project__tag">SaaS/AI</span>
+            <h3>Controva Intelligence Platform</h3>
+            <p>Agentic B2B lead-gen: Google Places/OSM discovery, Gemini scoring, Claude outreach.</p>
+            <div class="project__stack"><span>Python</span><span>PostgreSQL</span><span>Crawl4AI</span></div>
+          </div>
+        </article>
+        <article class="project reveal" data-cat="saas">
+          <div class="project__body">
+            <span class="project__tag">SaaS/AI</span>
+            <h3>Controva AI</h3>
+            <p>Multi-provider chat covering 8+ providers and 100+ models.</p>
+            <div class="project__stack"><span>LLMs</span><span>API Integration</span></div>
+          </div>
+        </article>
+        <article class="project reveal" data-cat="saas">
+          <div class="project__body">
+            <span class="project__tag">SaaS/AI</span>
+            <h3>ImagineStudio</h3>
+            <p>Imagine Art image/video studio suite.</p>
+            <div class="project__stack"><span>Generative AI</span><span>React</span></div>
+          </div>
+        </article>
+        <article class="project reveal" data-cat="saas">
+          <div class="project__body">
+            <span class="project__tag">SaaS/AI</span>
+            <h3>Luminus Proposal System</h3>
+            <p>Multi-company AI proposal generator.</p>
+            <div class="project__stack"><span>Vue.js</span><span>AI APIs</span></div>
+          </div>
+        </article>
+        <article class="project reveal" data-cat="saas">
+          <div class="project__body">
+            <span class="project__tag">SaaS/AI</span>
+            <h3>SignPrice AI</h3>
+            <p>Dynamic signage pricing engine.</p>
+            <div class="project__stack"><span>AI Cost Analysis</span><span>Vue</span></div>
+          </div>
+        </article>
+        <article class="project reveal" data-cat="saas">
+          <div class="project__body">
+            <span class="project__tag">SaaS/AI</span>
+            <h3>Signage Proposal Automation</h3>
+            <p>Automated proposal generation for signage companies.</p>
+            <div class="project__stack"><span>Vue 3</span><span>Supabase</span><span>Replicate</span></div>
+          </div>
+        </article>
+        <article class="project reveal" data-cat="saas">
+          <div class="project__body">
+            <span class="project__tag">SaaS/AI</span>
+            <h3>Agentic GTM Intelligence</h3>
+            <p>Automated scraping and pipeline feeding.</p>
+            <div class="project__stack"><span>Google Maps API</span><span>n8n</span></div>
+          </div>
+        </article>
+        <article class="project reveal" data-cat="saas">
+          <div class="project__body">
+            <span class="project__tag">SaaS/AI</span>
+            <h3>PDF Extraction Microservice</h3>
+            <p>High-fidelity data extraction.</p>
+            <div class="project__stack"><span>FastAPI</span><span>Adobe PDF</span><span>Gemini 1.5 Pro</span></div>
+          </div>
+        </article>
+        <article class="project reveal" data-cat="saas">
+          <div class="project__body">
+            <span class="project__tag">SaaS/AI</span>
+            <h3>Luminus CRM</h3>
+            <p>Custom CRM architecture.</p>
+            <div class="project__stack"><span>TypeScript</span><span>PL/pgSQL</span></div>
+          </div>
+        </article>
+        <article class="project reveal" data-cat="saas">
+          <div class="project__body">
+            <span class="project__tag">SaaS/AI</span>
+            <h3>WhatsApp Business Pipeline</h3>
+            <p>Meta-compliant business messaging automation.</p>
+            <div class="project__stack"><span>Twilio API</span><span>Node</span></div>
+          </div>
+        </article>
+
+        <!-- 3D/FRONTEND -->
+        <article class="project reveal" data-cat="web3d">
+          <div class="project__body">
+            <span class="project__tag">3D/Frontend</span>
+            <h3>Siparch</h3>
+            <p>3D enterprise portal with complex animations.</p>
+            <div class="project__stack"><span>R3F</span><span>GSAP</span></div>
+          </div>
+        </article>
+        <article class="project reveal" data-cat="web3d">
+          <div class="project__body">
+            <span class="project__tag">3D/Frontend</span>
+            <h3>Quantum Canvas</h3>
+            <p>13-phase animation sequence.</p>
+            <div class="project__stack"><span>Three.js</span><span>GSAP</span></div>
+          </div>
+        </article>
+        <article class="project reveal" data-cat="web3d">
+          <div class="project__body">
+            <span class="project__tag">3D/Frontend</span>
+            <h3>PHOSPHOR Studio</h3>
+            <p>Zero-dependency WebGL experiences.</p>
+            <div class="project__stack"><span>WebGL</span><span>GLSL</span></div>
+          </div>
+        </article>
+        <article class="project reveal" data-cat="web3d">
+          <div class="project__body">
+            <span class="project__tag">3D/Frontend</span>
+            <h3>Controva Agency Builds</h3>
+            <p>"Machine Cathedral" + "Inside the Mind" experiences.</p>
+            <div class="project__stack"><span>R3F</span><span>Next 15</span></div>
+          </div>
+        </article>
+        <article class="project reveal" data-cat="web3d">
+          <div class="project__body">
+            <span class="project__tag">3D/Frontend</span>
+            <h3>The Lioness Co</h3>
+            <p>WebGL brand site.</p>
+            <div class="project__stack"><span>WebGL</span></div>
+          </div>
+        </article>
+        <article class="project reveal" data-cat="web3d">
+          <div class="project__body">
+            <span class="project__tag">3D/Frontend</span>
+            <h3>PAKMEC Engineering</h3>
+            <p>Static generated corporate site.</p>
+            <div class="project__stack"><span>Next.js 15 SSG</span></div>
+          </div>
+        </article>
+        <article class="project reveal" data-cat="web3d">
+          <div class="project__body">
+            <span class="project__tag">3D/Frontend</span>
+            <h3>Premium Template Library</h3>
+            <p>Bespoke HTML structures.</p>
+            <div class="project__stack"><span>HTML</span><span>CSS</span></div>
+          </div>
+        </article>
+
+        <!-- E-COMMERCE -->
+        <article class="project reveal" data-cat="ecommerce">
+          <div class="project__body">
+            <span class="project__tag">E-commerce</span>
+            <h3>Laptops World</h3>
+            <p>SEO+Pixel optimized storefront.</p>
+            <div class="project__stack"><span>React/Vite</span><span>Supabase</span></div>
+          </div>
+        </article>
+        <article class="project reveal" data-cat="ecommerce">
+          <div class="project__body">
+            <span class="project__tag">E-commerce</span>
+            <h3>OSDON</h3>
+            <p>High-performance frontend architecture.</p>
+            <div class="project__stack"><span>React/TS/Vite</span></div>
+          </div>
+        </article>
+        <article class="project reveal" data-cat="ecommerce">
+          <div class="project__body">
+            <span class="project__tag">E-commerce</span>
+            <h3>MFTop Store</h3>
+            <p>Reusable scalable store template.</p>
+            <div class="project__stack"><span>React</span></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+    <!-- LIVE SITES -->
+    <section class="section river-section" id="sites">
+      <div class="river-stream" id="riverStream">
+        <!-- SVG Waves for realism -->
+        <svg class="wave-svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
+          <path fill="rgba(139, 92, 246, 0.1)"
+            d="M0,160L48,170.7C96,181,192,203,288,208C384,213,480,203,576,170.7C672,139,768,85,864,85.3C960,85,1056,139,1152,149.3C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z">
+          </path>
+        </svg>
+        <svg class="wave-svg wave-svg-2" viewBox="0 0 1440 320" preserveAspectRatio="none">
+          <path fill="rgba(168, 85, 247, 0.15)"
+            d="M0,224L48,213.3C96,203,192,181,288,186.7C384,192,480,224,576,218.7C672,213,768,171,864,149.3C960,128,1056,128,1152,149.3C1248,171,1344,213,1392,234.7L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z">
+          </path>
+        </svg>
+      </div>
+
+      <div class="section-header" style="position: relative; z-index: 2;">
+        <span class="section__label reveal">// 01 — profile.json</span>
+        <h2 class="section__title glitch-heading">Architecting the <span class="text-grad">impossible.</span></h2>
+      </div>
+
+      <div class="river-rocks reveal" id="riverRocks" style="position: relative; z-index: 2;">
+        <a href="https://controvallc.com" target="_blank" class="skill-chip rock-chip"><i
+            class="fa-solid fa-globe"></i><span>controvallc.com</span></a>
+        <a href="https://siparch.com" target="_blank" class="skill-chip rock-chip"><i
+            class="fa-solid fa-globe"></i><span>siparch.com</span></a>
+        <a href="https://hyperstackdev.com" target="_blank" class="skill-chip rock-chip"><i
+            class="fa-solid fa-globe"></i><span>hyperstackdev.com</span></a>
+        <a href="https://finservicex.com" target="_blank" class="skill-chip rock-chip"><i
+            class="fa-solid fa-globe"></i><span>finservicex.com</span></a>
+        <a href="https://maxveras.com" target="_blank" class="skill-chip rock-chip"><i
+            class="fa-solid fa-globe"></i><span>maxveras.com</span></a>
+        <a href="https://totalofficeab.com" target="_blank" class="skill-chip rock-chip"><i
+            class="fa-solid fa-globe"></i><span>totalofficeab.com</span></a>
+        <a href="https://thelionessco.com.au" target="_blank" class="skill-chip rock-chip"><i
+            class="fa-solid fa-globe"></i><span>thelionessco.com.au</span></a>
+        <a href="https://signagecrafting.com" target="_blank" class="skill-chip rock-chip"><i
+            class="fa-solid fa-globe"></i><span>signagecrafting.com</span></a>
+        <a href="https://laptopsworld.pk" target="_blank" class="skill-chip rock-chip"><i
+            class="fa-solid fa-globe"></i><span>laptopsworld.pk</span></a>
+        <a href="https://mftop.store" target="_blank" class="skill-chip rock-chip"><i
+            class="fa-solid fa-globe"></i><span>mftop.store</span></a>
+        <a href="https://osdon.co" target="_blank" class="skill-chip rock-chip"><i
+            class="fa-solid fa-globe"></i><span>osdon.co</span></a>
+      </div>
+    </section>
+
+    <!-- TIMELINE -->
+    <section class="section section--alt" id="timeline">
+      <!-- Geo Shape: Pyramid -->
+      <div class="geo-shape geo-pyramid" style="top: 15%; right: 10%;">
+        <div class="geo-face"></div><div class="geo-face"></div><div class="geo-face"></div><div class="geo-face"></div>
+        <div class="geo-face base"></div>
+      </div>
+
+      <p class="section__label reveal">// 06 — journey.log</p>
+      <h2 class="section__title lift-heading">My <span class="text-grad">journey.</span></h2>
+
+      <div class="timeline" id="journeyTimeline">
+        <svg class="timeline__track" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <path class="track-bg" d="M 50 0 C 20 12, 20 22, 50 33 C 80 45, 80 55, 50 66 C 20 78, 20 88, 50 100" vector-effect="non-scaling-stroke" />
+          <path class="track-progress" id="timelineProgress" d="M 50 0 C 20 12, 20 22, 50 33 C 80 45, 80 55, 50 66 C 20 78, 20 88, 50 100" vector-effect="non-scaling-stroke" />
+        </svg>
+
+        <div class="tl-item reveal tl-item--left">
+          <div class="tl-item__content">
+            <span class="tl-item__date">2024 — present</span>
+            <h3>Senior Full-Stack & Voice Engineer</h3>
+            <p>Building carrier-grade SIP routing infrastructure, multi-tenant contact centers, and sub-second voice AI
+              agents.</p>
+          </div>
+          <div class="tl-item__dot"></div>
+        </div>
+
+        <div class="tl-item reveal tl-item--right">
+          <div class="tl-item__content">
+            <span class="tl-item__date">2022 — 2024</span>
+            <h3>AI Systems Builder</h3>
+            <p>Developed production SaaS platforms, agentic B2B intelligence tools, and multi-provider AI chat
+              architectures.</p>
+          </div>
+          <div class="tl-item__dot"></div>
+        </div>
+
+        <div class="tl-item reveal tl-item--left">
+          <div class="tl-item__content">
+            <span class="tl-item__date">2021 — 2022</span>
+            <h3>Full-Stack Developer</h3>
+            <p>Crafted immersive 3D web experiences, optimized e-commerce frontends, and designed robust RESTful APIs.
+            </p>
+          </div>
+          <div class="tl-item__dot"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="section" id="contact">
+        <!-- Geo Shape: Dodecahedron (approximated) -->
+        <div class="geo-shape geo-dodecahedron" style="top: 40%; left: 5%;">
+          <div class="geo-face"></div><div class="geo-face"></div><div class="geo-face"></div><div class="geo-face"></div>
+        </div>
+
+        <p class="section__label reveal">// 07 — contact.send()</p>
+        <div class="contact">
+          <div class="contact__intro reveal">
+            <h2 class="spotlight-heading">Let's build something <span class="text-grad">great together.</span></h2>
+            <p class="smoky-desc">Have a project in mind, or just want to say hi? My inbox is always open.</p>
+            <div class="contact__info">
+              <a href="mailto:uiwibi@gmail.com"><i class="fa-solid fa-envelope"></i>uiwibi@gmail.com</a>
+              <a href="#"><i class="fa-solid fa-location-dot"></i>Pakistan (Remote / Worldwide)</a>
+            </div>
+            <div class="contact__socials">
+              <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+              <a href="https://wa.me/923166922090" target="_blank" aria-label="WhatsApp"><i
+                  class="fa-brands fa-whatsapp"></i></a>
+            </div>
+          </div>
+
+          <div class="workflow-anim reveal">
+            <div class="wf-step" style="--step: 1">
+              <div class="wf-icon"><i class="fa-solid fa-envelope-open-text"></i></div>
+              <div class="wf-text">
+                <h4>1. Initiate</h4>
+                <p>You send a request</p>
+              </div>
+            </div>
+            <div class="wf-line" style="--step: 1"></div>
+            
+            <div class="wf-step" style="--step: 2">
+              <div class="wf-icon"><i class="fa-solid fa-comments"></i></div>
+              <div class="wf-text">
+                <h4>2. Discuss</h4>
+                <p>We align on strategy</p>
+              </div>
+            </div>
+            <div class="wf-line" style="--step: 2"></div>
+            
+            <div class="wf-step" style="--step: 3">
+              <div class="wf-icon"><i class="fa-solid fa-laptop-code"></i></div>
+              <div class="wf-text">
+                <h4>3. Build</h4>
+                <p>I build your solution</p>
+              </div>
+            </div>
+            <div class="wf-line" style="--step: 3"></div>
+            
+            <div class="wf-step wf-step--final" style="--step: 4">
+              <div class="wf-icon"><i class="fa-solid fa-handshake-angle"></i></div>
+              <div class="wf-text">
+                <h4>4. Success</h4>
+                <p>Mutual satisfaction</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+  </main>
+
+  <!-- AI Chat Widget -->
+  <div class="robot-chat-ui" id="robotChatUI">
+    <div class="chat-header">
+      <div class="chat-avatar"><i class="fa-solid fa-robot"></i></div>
+      <div class="chat-header-info">
+        <h4>AI Assistant</h4>
+        <div class="status"><span class="status-dot"></span> Online</div>
+      </div>
+      <div>
+        <button id="talkModeToggle" class="talk-mode-toggle" title="Toggle Talk Mode"><i
+            class="fa-solid fa-headset"></i></button>
+        <button id="chatMinimize" class="chat-toggle-btn" title="Minimize Chat"><i
+            class="fa-solid fa-minus"></i></button>
+      </div>
+    </div>
+    <div class="chat-history" id="chatHistory"></div>
+    <form class="chat-input-form" id="chatForm">
+      <input type="text" id="chatInput" placeholder="Ask me anything..." required autocomplete="off">
+      <button type="button" id="chatMic" title="Voice Input"
+        style="background:none; border:none; color:var(--purple); font-size:1.2rem; cursor:pointer;"><i
+          class="fa-solid fa-microphone"></i></button>
+      <button type="submit"
+        style="background:none; border:none; color:var(--purple); font-size:1.2rem; cursor:pointer;"><i
+          class="fa-solid fa-paper-plane"></i></button>
+    </form>
+  </div>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <a href="#home" class="nav__logo"><span>&lt;</span>Wibi<span>/&gt;</span></a>
+      <p>Designed &amp; built by Wibi — © 2026.</p>
+      <a href="#home" class="footer__top magnetic" aria-label="Back to top"><i class="fa-solid fa-arrow-up"></i></a>
+    </div>
+  </footer>
+  </div>
+
+  <!-- Custom Cursor -->
+  <div class="cursor-glow" id="cursorGlow"></div>
+  <div class="custom-cursor" id="lusionCursor"></div>
+
+  <!-- Three.js for 3D Robot -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="script.js?v=42"></script>
+</body>
+</html>
