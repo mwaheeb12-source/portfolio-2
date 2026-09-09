@@ -1,5 +1,3 @@
-const https = require('https');
-
 const SYSTEM_PROMPT = `You are Wana, a friendly AI robot assistant on Wibi's portfolio website. Be concise (1-2 sentences max). Answer questions about his portfolio OR general questions.
 
 ABOUT: Wibi — Full-Stack Developer & Voice Engineer. Pakistan (Remote/Worldwide). Email: uiwibi@gmail.com. GitHub: github.com/imaafaqakram. WhatsApp: wa.me/923166922090.
@@ -32,54 +30,46 @@ export default async function handler(req, res) {
     return;
   }
 
-  const payload = JSON.stringify({
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    return res.status(500).json({ error: 'Gemini API key not configured' });
+  }
+
+  const payload = {
     system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
     contents: [{ role: 'user', parts: [{ text: message }] }],
     generationConfig: { temperature: 0.7, maxOutputTokens: 100, thinkingConfig: { thinkingBudget: 0 } }
-  });
+  };
 
   try {
-    const reply = await new Promise((resolve, reject) => {
-      const apiReq = https.request({
-        hostname: 'generativelanguage.googleapis.com',
-        path: `/v1beta/models/gemini-3.1-flash-lite:generateContent?key=${process.env.GEMINI_API_KEY}`,
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=${apiKey}`,
+      {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Content-Length': Buffer.byteLength(payload)
-        }
-      }, apiRes => {
-        let apiBody = '';
-        apiRes.on('data', d => apiBody += d);
-        apiRes.on('end', () => {
-          if (apiRes.statusCode !== 200) {
-            console.error('Gemini error:', apiBody);
-            try {
-              const data = JSON.parse(apiBody);
-              reject(new Error(data.error?.message || 'AI error'));
-            } catch (e) {
-              reject(new Error('AI error'));
-            }
-            return;
-          }
-          try {
-            const data = JSON.parse(apiBody);
-            const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-            resolve(text);
-          } catch (e) {
-            reject(new Error('Failed to parse response'));
-          }
-        });
-      });
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      }
+    );
 
-      apiReq.on('error', reject);
-      apiReq.write(payload);
-      apiReq.end();
-    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Gemini error:', response.status, errorText);
+      try {
+        const errData = JSON.parse(errorText);
+        return res.status(response.status).json({ error: errData.error?.message || 'AI error' });
+      } catch (e) {
+        return res.status(response.status).json({ error: 'AI error', details: errorText });
+      }
+    }
 
+    const data = await response.json();
+    const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
     res.status(200).json({ reply: reply?.trim() || 'No response from AI.' });
   } catch (error) {
     console.error('Gemini request error:', error.message);
     res.status(500).json({ error: error.message });
   }
 }
+

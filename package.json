@@ -1,5 +1,6 @@
 {
-  "dependencies": {
-    "framer-motion": "^12.42.2"
-  }
+  "name": "portfolio-2",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true
 }
