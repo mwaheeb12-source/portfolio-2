@@ -1,7 +1,11 @@
-const http = require('http');
-const https = require('https');
-const fs = require('fs');
-const path = require('path');
+import http from 'http';
+import https from 'https';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Load API keys from .env.local
 const envPath = path.join(__dirname, '.env.local');
@@ -16,8 +20,8 @@ if (fs.existsSync(envPath)) {
   if (cartesiaMatch) CARTESIA_API_KEY = cartesiaMatch[1].trim();
 }
 
-console.log('Gemini API Key loaded:', GEMINI_API_KEY ? GEMINI_API_KEY.substring(0, 10) + '...' : 'MISSING!');
-console.log('Cartesia API Key loaded:', CARTESIA_API_KEY ? CARTESIA_API_KEY.substring(0, 10) + '...' : 'MISSING!');
+console.log('Gemini API Key loaded:', GEMINI_API_KEY ? GEMINI_API_KEY.substring(0, 10) + '...' : 'MISSING');
+console.log('Cartesia API Key loaded:', CARTESIA_API_KEY ? CARTESIA_API_KEY.substring(0, 10) + '...' : 'MISSING');
 
 const SYSTEM_PROMPT = `You are Wana, a friendly AI robot assistant on Wibi's portfolio website. Be concise (1-2 sentences max). Answer questions about his portfolio OR general questions.
 
@@ -30,13 +34,14 @@ KEY PROJECTS: Clarion Platform (multi-tenant contact center, FreeSWITCH/React/No
 CONTACT: uiwibi@gmail.com | wa.me/923166922090 | github.com/imaafaqakram`;
 
 const MIME = {
-  '.html': 'text/html',
-  '.css':  'text/css',
-  '.js':   'application/javascript',
+  '.html': 'text/html; charset=utf-8',
+  '.css':  'text/css; charset=utf-8',
+  '.js':   'application/javascript; charset=utf-8',
   '.png':  'image/png',
   '.jpg':  'image/jpeg',
   '.svg':  'image/svg+xml',
   '.ico':  'image/x-icon',
+  '.json': 'application/json'
 };
 
 const server = http.createServer((req, res) => {
@@ -50,11 +55,11 @@ const server = http.createServer((req, res) => {
     return res.end();
   }
 
-  // API Route
+  // API Route: /api/chat
   if (req.url === '/api/chat' && req.method === 'POST') {
     let body = '';
     req.on('data', chunk => body += chunk);
-    req.on('end', () => {
+    req.on('end', async () => {
       let message;
       try { message = JSON.parse(body).message; } catch(e) {
         res.writeHead(400, {'Content-Type': 'application/json'});
@@ -64,6 +69,11 @@ const server = http.createServer((req, res) => {
       if (!message) {
         res.writeHead(400, {'Content-Type': 'application/json'});
         return res.end(JSON.stringify({ error: 'Message required' }));
+      }
+
+      if (!GEMINI_API_KEY) {
+        res.writeHead(200, {'Content-Type': 'application/json'});
+        return res.end(JSON.stringify({ reply: "I am Wana, Waheeb's portfolio assistant! To enable dynamic live Gemini responses locally, set GEMINI_API_KEY in .env.local." }));
       }
 
       const payload = JSON.stringify({
@@ -81,15 +91,20 @@ const server = http.createServer((req, res) => {
         let apiBody = '';
         apiRes.on('data', d => apiBody += d);
         apiRes.on('end', () => {
-          const data = JSON.parse(apiBody);
           if (apiRes.statusCode !== 200) {
             console.error('Gemini error:', apiBody);
             res.writeHead(500, {'Content-Type': 'application/json'});
-            return res.end(JSON.stringify({ error: data.error?.message || 'AI error' }));
+            return res.end(JSON.stringify({ error: 'AI provider error' }));
           }
-          const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-          res.writeHead(200, {'Content-Type': 'application/json'});
-          res.end(JSON.stringify({ reply: reply?.trim() || 'No response from AI.' }));
+          try {
+            const data = JSON.parse(apiBody);
+            const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+            res.writeHead(200, {'Content-Type': 'application/json'});
+            res.end(JSON.stringify({ reply: reply?.trim() || 'No response from AI.' }));
+          } catch(err) {
+            res.writeHead(500, {'Content-Type': 'application/json'});
+            res.end(JSON.stringify({ error: 'Parse error' }));
+          }
         });
       });
 
@@ -104,7 +119,7 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // TTS API Route (Cartesia)
+  // API Route: /api/tts
   if (req.url === '/api/tts' && req.method === 'POST') {
     let body = '';
     req.on('data', chunk => body += chunk);
@@ -120,10 +135,15 @@ const server = http.createServer((req, res) => {
         return res.end(JSON.stringify({ error: 'Text required' }));
       }
 
+      if (!CARTESIA_API_KEY) {
+        res.writeHead(400, {'Content-Type': 'application/json'});
+        return res.end(JSON.stringify({ error: 'Cartesia API key not configured' }));
+      }
+
       const payload = JSON.stringify({
         model_id: 'sonic-3.5',
         transcript: text,
-        voice: { mode: 'id', id: '30894953-bcce-41fe-892c-15ce19c843ff' }, // Wana voice
+        voice: { mode: 'id', id: '30894953-bcce-41fe-892c-15ce19c843ff' },
         output_format: { container: 'mp3', encoding: 'mp3', sample_rate: 44100 }
       });
 
@@ -143,8 +163,6 @@ const server = http.createServer((req, res) => {
           res.writeHead(500, {'Content-Type': 'application/json'});
           return res.end(JSON.stringify({ error: 'Cartesia API error' }));
         }
-        
-        // Pipe the MP3 audio directly to the frontend
         res.writeHead(200, { 'Content-Type': 'audio/mpeg' });
         ttsRes.pipe(res);
       });
@@ -161,8 +179,9 @@ const server = http.createServer((req, res) => {
   }
 
   // Serve static files
-  let filePath = path.join(__dirname, req.url === '/' ? 'index.html' : req.url);
-  // Prevent path traversal
+  let cleanUrl = req.url.split('?')[0];
+  let filePath = path.join(__dirname, cleanUrl === '/' ? 'index.html' : cleanUrl);
+  
   if (!filePath.startsWith(__dirname)) {
     res.writeHead(403); return res.end();
   }
@@ -180,6 +199,5 @@ const server = http.createServer((req, res) => {
 
 const PORT = 3005;
 server.listen(PORT, () => {
-  console.log(`\n✅ Server running at http://localhost:${PORT}`);
-  console.log(`   Open http://localhost:${PORT} in your browser to test the chatbot!\n`);
+  console.log(`Server listening on http://localhost:${PORT}`);
 });

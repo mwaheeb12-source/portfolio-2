@@ -98,6 +98,12 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
 /* Container */
 .container {
   width: 100%;
@@ -613,12 +619,14 @@ ul {
   background: radial-gradient(circle at center, var(--purple-subtle) 0%, transparent 70%);
   border: 1px solid var(--border);
   overflow: hidden;
+  touch-action: pan-y;
 }
 
 .hero-stage canvas {
   width: 100% !important;
   height: 100% !important;
   display: block;
+  pointer-events: none; /* Allows natural vertical touch scrolling over the stage */
 }
 
 .stage-caption {
