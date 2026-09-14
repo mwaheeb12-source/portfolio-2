@@ -4,587 +4,1123 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wibi - Full-Stack Developer & Voice Engineer</title>
+  <title>Waheeb Ullah (Wibi) — Full-Stack Developer &amp; Voice Engineer</title>
+  <meta name="description" content="Portfolio of Waheeb Ullah (Wibi), Full-Stack Developer &amp; Voice Engineer specializing in interactive 3D web applications, real-time voice systems, and AI automation.">
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link
-    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
-    rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="styles.css?v=43">
+  <link rel="stylesheet" href="styles.css?v=50">
 </head>
 
 <body>
-  <div id="page-wrapper" style="width: 100%; max-width: 100%; overflow-x: hidden; position: relative;">
-  <!-- 3D Scroll-Driven Volumetric Canvas -->
-  <canvas id="particles"></canvas>
-
-  <!-- Cinematic Crosshairs -->
-  <div class="crosshair ch-1">+</div>
-  <div class="crosshair ch-2">+</div>
-  <div class="crosshair ch-3">+</div>
-  <div class="crosshair ch-4">+</div>
-
-  <!-- Scroll progress bar -->
-  <div class="scroll-progress">
-    <div class="scroll-progress__bar" id="scrollBar"></div>
+  <!-- Scroll Progress Indicator -->
+  <div class="scroll-progress-container" aria-hidden="true">
+    <div class="scroll-progress-bar" id="scrollBar"></div>
   </div>
-
 
   <!-- NAVIGATION -->
-  <nav class="nav" id="nav">
-    <div class="nav__inner">
-      <a href="#home" class="nav__logo"><span>&lt;</span>Wibi<span>/&gt;</span></a>
-      <ul class="nav__links" id="navLinks">
-        <li><a href="#home" class="nav__link active magnetic" data-nav style="display:inline-block">home</a></li>
-        <li><a href="#profile" class="nav__link magnetic" data-nav style="display:inline-block">profile</a></li>
-        <li><a href="#skills" class="nav__link magnetic" data-nav style="display:inline-block">skills</a></li>
-        <li><a href="#work" class="nav__link magnetic" data-nav style="display:inline-block">work</a></li>
-        <li><a href="#sites" class="nav__link magnetic" data-nav style="display:inline-block">sites</a></li>
-        <li><a href="#timeline" class="nav__link magnetic" data-nav style="display:inline-block">journey</a></li>
-        <li><a href="#contact" class="nav__link magnetic" data-nav style="display:inline-block">contact</a></li>
-      </ul>
-      <button id="themeToggle" class="theme-toggle magnetic" aria-label="Toggle dark mode" style="background:transparent; border:none; font-size:1.2rem; cursor:pointer; color:var(--text); padding:10px; display:inline-block;">
-        <i class="fa-solid fa-moon"></i>
-      </button>
-      <a href="#contact" class="btn btn--primary magnetic nav__cta"
-        style="color:white; background:var(--purple); border:none; display:inline-block">say hello</a>
-      <button class="nav__burger" id="burger" aria-label="Toggle menu">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </nav>
+  <header class="header" id="header">
+    <div class="nav-container">
+      <a href="#home" class="nav-logo" aria-label="Waheeb Ullah Portfolio Home">
+        <span class="logo-bracket">&lt;</span><span class="logo-name">Wibi</span><span class="logo-bracket">/&gt;</span>
+      </a>
 
-  <!-- MOBILE FULLSCREEN MENU -->
-  <div class="mobile-menu" id="mobileMenu">
-    <a href="#home"     class="mobile-nav-link">Home</a>
-    <a href="#profile"  class="mobile-nav-link">Profile</a>
-    <a href="#skills"   class="mobile-nav-link">Skills</a>
-    <a href="#work"     class="mobile-nav-link">Work</a>
-    <a href="#sites"    class="mobile-nav-link">Sites</a>
-    <a href="#timeline" class="mobile-nav-link">Journey</a>
-    <a href="#contact"  class="mobile-nav-link">Contact</a>
-    <div class="mobile-menu__footer">
-      <a href="#contact" class="btn btn--primary" style="color:white;background:var(--purple);border:none;">Say Hello</a>
-    </div>
-  </div>
+      <nav class="nav-menu" id="navMenu" aria-label="Main Navigation">
+        <ul class="nav-list">
+          <li><a href="#profile" class="nav-link" data-nav>About</a></li>
+          <li><a href="#work" class="nav-link" data-nav>Work</a></li>
+          <li><a href="#skills" class="nav-link" data-nav>Expertise</a></li>
+          <li><a href="#sites" class="nav-link" data-nav>Live Sites</a></li>
+          <li><a href="#contact" class="nav-link" data-nav>Contact</a></li>
+        </ul>
+      </nav>
 
-  <!-- HERO (Lusion Push-Through Style) -->
-  <header class="hero" id="home">
-    <div id="robot-container" aria-hidden="true"></div>
-    <div class="hero__content" id="heroContent" style="transform: none; animation: none;">
-      <h2 class="hero__typewriter"><span id="typewriterText"></span><span class="typewriter-cursor"></span></h2>
+      <div class="nav-actions">
+        <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark or light mode" title="Toggle theme">
+          <i class="fa-solid fa-moon" aria-hidden="true"></i>
+        </button>
+        <a href="#contact" class="btn btn-primary nav-cta">Say Hello</a>
+        <button class="nav-burger" id="burger" aria-label="Open mobile menu" aria-expanded="false" aria-controls="mobileMenu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
     </div>
-
-    <!-- Geo Shape: Octahedron -->
-    <div class="geo-shape geo-octahedron" style="top: 20%; right: 10%;">
-      <div class="geo-face"></div><div class="geo-face"></div><div class="geo-face"></div><div class="geo-face"></div>
-      <div class="geo-face"></div><div class="geo-face"></div><div class="geo-face"></div><div class="geo-face"></div>
-    </div>
-
-    <a href="#profile" class="hero__scroll" aria-label="Scroll down">
-      <span>scroll to explore</span>
-    </a>
   </header>
 
-  <!-- Water Surface Boundary -->
-  <div class="water-surface"></div>
-
-  <main>
-    
-    <!-- PROFILE SECTION -->
-    <section class="section profile-section" id="profile" style="margin-bottom: 25vh;">
-      <!-- Geo Shape: Torus (Ring) -->
-      <div class="geo-shape geo-ring" style="bottom: 10%; left: 5%;">
-        <div class="geo-ring-circle"></div><div class="geo-ring-circle"></div><div class="geo-ring-circle"></div>
-      </div>
-      <h2 class="profile-bg-text" id="profileBgText">PROFILE</h2>
-      <div class="profile-layout">
-        <!-- Bottom Left Info -->
-        <div class="profile-info reveal">
-          <div class="profile-index">01 / PROFILE</div>
-          <h3 class="profile-name">WIBI</h3>
-          <div class="profile-title">FULL-STACK DEVELOPER &amp;<br>VOICE ENGINEER</div>
-        </div>
-        <!-- Central 3D Hologram Wrapper -->
-        <div class="profile-hologram reveal" id="profileHologramContainer">
-          <!-- The 3D hologram canvas will attach over this space dynamically via Three.js -->
-        </div>
-        <!-- Right Side Text -->
-        <div class="profile-desc reveal">
-          <div class="skill-chip"><i class="fa-solid fa-robot"></i><span>LLMs/AI</span></div>
-          <div class="skill-chip"><i class="fa-brands fa-css3-alt"></i><span>Tailwind</span></div>
-        </div>
-
-        <div class="skills__bars reveal" id="skillsHologramContainer" style="position: relative; min-height: 400px;">
-          <!-- Content completely driven by 3D particles -->
-        </div>
-      </div>
-    </section>
-
-    <!-- CLARION FLAGSHIP -->
-    <section class="section" id="clarion">
-      <!-- Geo Shape: Cube -->
-      <div class="geo-shape geo-cube" style="top: 30%; right: 5%;">
-        <div class="geo-face"></div><div class="geo-face"></div><div class="geo-face"></div>
-        <div class="geo-face"></div><div class="geo-face"></div><div class="geo-face"></div>
-      </div>
-
-      <p class="section__label reveal">// 03 — flagship.ts</p>
-      <div class="about">
-        <div class="about__body">
-          <h2 class="elastic-heading">Clarion <span class="text-grad">Platform.</span></h2>
-          <p class="smoky-desc">
-            A multi-tenant contact-center platform built from the ground up. Features include an agent cockpit, live
-            transcription, dialplan manager, SIP endpoints/gateways, campaigns, workflow designer, and full Arabic RTL
-            support.
-          </p>
-          <div class="project__stack reveal" style="margin-top: 20px;">
-            <span>FreeSWITCH</span><span>Asterisk</span><span>React</span><span>Node</span><span>PostgreSQL</span><span>Redis</span><span>WebSockets</span>
-          </div>
-        </div>
-        <div class="about__visual reveal">
-          <div class="about__frame" style="width: 100%; aspect-ratio: 16/9; height: auto;">
-            <img src="./clarion.png" alt="Clarion Dashboard" id="clarionImg"
-              style="width: 100%; height: 100%; object-fit: cover; border-radius: 60px 0 60px 0;">
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ALL PROJECTS -->
-    <section class="section section--alt horizontal-scroll-wrapper" id="work">
-      <div class="horizontal-sticky">
-        <div class="section-header">
-          <!-- Geo Shape: Icosahedron (approximated) -->
-          <div class="geo-shape geo-icosahedron" style="top: -50px; left: -10%;">
-            <div class="geo-face"></div><div class="geo-face"></div><div class="geo-face"></div><div class="geo-face"></div>
-          </div>
-          <span class="section__label reveal">// 04 — projects.map()</span>
-          <h2 class="section__title smoky-heading">Featured <span class="text-grad">Projects.</span></h2>
-        </div>
-        <div class="filters reveal">
-          <button class="filter active magnetic" data-filter="all" style="display:inline-block">All</button>
-          <button class="filter magnetic" data-filter="voice" style="display:inline-block">WebRTC / Telephony</button>
-          <button class="filter magnetic" data-filter="web3d" style="display:inline-block">ThreeJS</button>
-          <button class="filter magnetic" data-filter="saas" style="display:inline-block">Full Stack & AI</button>
-        </div>
-
-        <div class="projects-track-wrapper">
-          <div class="projects" id="projectGrid">
-        <!-- PROJECTS CONTENT -->
-        <article class="project reveal" data-cat="voice">
-          <div class="project__body">
-            <span class="project__tag">Voice/Telephony</span>
-            <h3>Clarion Platform</h3>
-            <p>Multi-tenant contact-center platform: agent cockpit, live transcription, dialplan manager.</p>
-            <div class="project__stack"><span>FreeSWITCH</span><span>React</span><span>Node</span></div>
-          </div>
-        </article>
-        <article class="project reveal" data-cat="voice">
-          <div class="project__body">
-            <span class="project__tag">Voice/Telephony</span>
-            <h3>Wholesale VoIP Transit</h3>
-            <p>Handling 5,000+ concurrent calls via robust routing.</p>
-            <div class="project__stack"><span>Kamailio SBCs</span><span>RTPEngine</span></div>
-          </div>
-        </article>
-        <article class="project reveal" data-cat="voice">
-          <div class="project__body">
-            <span class="project__tag">Voice/Telephony</span>
-            <h3>Voice AI Eligibility Engine</h3>
-            <p>Sub-600ms latency voice agent.</p>
-            <div class="project__stack"><span>Deepgram STT</span><span>Llama-3</span><span>Cartesia TTS</span></div>
-          </div>
-        </article>
-        <article class="project reveal" data-cat="voice">
-          <div class="project__body">
-            <span class="project__tag">Voice/Telephony</span>
-            <h3>Twilio Phone</h3>
-            <p>Browser calling interface.</p>
-            <div class="project__stack"><span>Twilio Voice SDK</span><span>Supabase</span></div>
-          </div>
-        </article>
-        <article class="project reveal" data-cat="voice">
-          <div class="project__body">
-            <span class="project__tag">Voice/Telephony</span>
-            <h3>FreeSWITCH Infrastructure</h3>
-            <p>WebSocket bridging and Event Socket Library integrations.</p>
-            <div class="project__stack"><span>Docker</span><span>mod_audio_pipe</span><span>ESL</span></div>
-          </div>
-        </article>
-
-        <!-- SAAS/AI -->
-        <article class="project reveal" data-cat="saas">
-          <div class="project__body">
-            <span class="project__tag">SaaS/AI</span>
-            <h3>Controva Intelligence Platform</h3>
-            <p>Agentic B2B lead-gen: Google Places/OSM discovery, Gemini scoring, Claude outreach.</p>
-            <div class="project__stack"><span>Python</span><span>PostgreSQL</span><span>Crawl4AI</span></div>
-          </div>
-        </article>
-        <article class="project reveal" data-cat="saas">
-          <div class="project__body">
-            <span class="project__tag">SaaS/AI</span>
-            <h3>Controva AI</h3>
-            <p>Multi-provider chat covering 8+ providers and 100+ models.</p>
-            <div class="project__stack"><span>LLMs</span><span>API Integration</span></div>
-          </div>
-        </article>
-        <article class="project reveal" data-cat="saas">
-          <div class="project__body">
-            <span class="project__tag">SaaS/AI</span>
-            <h3>ImagineStudio</h3>
-            <p>Imagine Art image/video studio suite.</p>
-            <div class="project__stack"><span>Generative AI</span><span>React</span></div>
-          </div>
-        </article>
-        <article class="project reveal" data-cat="saas">
-          <div class="project__body">
-            <span class="project__tag">SaaS/AI</span>
-            <h3>Luminus Proposal System</h3>
-            <p>Multi-company AI proposal generator.</p>
-            <div class="project__stack"><span>Vue.js</span><span>AI APIs</span></div>
-          </div>
-        </article>
-        <article class="project reveal" data-cat="saas">
-          <div class="project__body">
-            <span class="project__tag">SaaS/AI</span>
-            <h3>SignPrice AI</h3>
-            <p>Dynamic signage pricing engine.</p>
-            <div class="project__stack"><span>AI Cost Analysis</span><span>Vue</span></div>
-          </div>
-        </article>
-        <article class="project reveal" data-cat="saas">
-          <div class="project__body">
-            <span class="project__tag">SaaS/AI</span>
-            <h3>Signage Proposal Automation</h3>
-            <p>Automated proposal generation for signage companies.</p>
-            <div class="project__stack"><span>Vue 3</span><span>Supabase</span><span>Replicate</span></div>
-          </div>
-        </article>
-        <article class="project reveal" data-cat="saas">
-          <div class="project__body">
-            <span class="project__tag">SaaS/AI</span>
-            <h3>Agentic GTM Intelligence</h3>
-            <p>Automated scraping and pipeline feeding.</p>
-            <div class="project__stack"><span>Google Maps API</span><span>n8n</span></div>
-          </div>
-        </article>
-        <article class="project reveal" data-cat="saas">
-          <div class="project__body">
-            <span class="project__tag">SaaS/AI</span>
-            <h3>PDF Extraction Microservice</h3>
-            <p>High-fidelity data extraction.</p>
-            <div class="project__stack"><span>FastAPI</span><span>Adobe PDF</span><span>Gemini 1.5 Pro</span></div>
-          </div>
-        </article>
-        <article class="project reveal" data-cat="saas">
-          <div class="project__body">
-            <span class="project__tag">SaaS/AI</span>
-            <h3>Luminus CRM</h3>
-            <p>Custom CRM architecture.</p>
-            <div class="project__stack"><span>TypeScript</span><span>PL/pgSQL</span></div>
-          </div>
-        </article>
-        <article class="project reveal" data-cat="saas">
-          <div class="project__body">
-            <span class="project__tag">SaaS/AI</span>
-            <h3>WhatsApp Business Pipeline</h3>
-            <p>Meta-compliant business messaging automation.</p>
-            <div class="project__stack"><span>Twilio API</span><span>Node</span></div>
-          </div>
-        </article>
-
-        <!-- 3D/FRONTEND -->
-        <article class="project reveal" data-cat="web3d">
-          <div class="project__body">
-            <span class="project__tag">3D/Frontend</span>
-            <h3>Siparch</h3>
-            <p>3D enterprise portal with complex animations.</p>
-            <div class="project__stack"><span>R3F</span><span>GSAP</span></div>
-          </div>
-        </article>
-        <article class="project reveal" data-cat="web3d">
-          <div class="project__body">
-            <span class="project__tag">3D/Frontend</span>
-            <h3>Quantum Canvas</h3>
-            <p>13-phase animation sequence.</p>
-            <div class="project__stack"><span>Three.js</span><span>GSAP</span></div>
-          </div>
-        </article>
-        <article class="project reveal" data-cat="web3d">
-          <div class="project__body">
-            <span class="project__tag">3D/Frontend</span>
-            <h3>PHOSPHOR Studio</h3>
-            <p>Zero-dependency WebGL experiences.</p>
-            <div class="project__stack"><span>WebGL</span><span>GLSL</span></div>
-          </div>
-        </article>
-        <article class="project reveal" data-cat="web3d">
-          <div class="project__body">
-            <span class="project__tag">3D/Frontend</span>
-            <h3>Controva Agency Builds</h3>
-            <p>"Machine Cathedral" + "Inside the Mind" experiences.</p>
-            <div class="project__stack"><span>R3F</span><span>Next 15</span></div>
-          </div>
-        </article>
-        <article class="project reveal" data-cat="web3d">
-          <div class="project__body">
-            <span class="project__tag">3D/Frontend</span>
-            <h3>The Lioness Co</h3>
-            <p>WebGL brand site.</p>
-            <div class="project__stack"><span>WebGL</span></div>
-          </div>
-        </article>
-        <article class="project reveal" data-cat="web3d">
-          <div class="project__body">
-            <span class="project__tag">3D/Frontend</span>
-            <h3>PAKMEC Engineering</h3>
-            <p>Static generated corporate site.</p>
-            <div class="project__stack"><span>Next.js 15 SSG</span></div>
-          </div>
-        </article>
-        <article class="project reveal" data-cat="web3d">
-          <div class="project__body">
-            <span class="project__tag">3D/Frontend</span>
-            <h3>Premium Template Library</h3>
-            <p>Bespoke HTML structures.</p>
-            <div class="project__stack"><span>HTML</span><span>CSS</span></div>
-          </div>
-        </article>
-
-        <!-- E-COMMERCE -->
-        <article class="project reveal" data-cat="ecommerce">
-          <div class="project__body">
-            <span class="project__tag">E-commerce</span>
-            <h3>Laptops World</h3>
-            <p>SEO+Pixel optimized storefront.</p>
-            <div class="project__stack"><span>React/Vite</span><span>Supabase</span></div>
-          </div>
-        </article>
-        <article class="project reveal" data-cat="ecommerce">
-          <div class="project__body">
-            <span class="project__tag">E-commerce</span>
-            <h3>OSDON</h3>
-            <p>High-performance frontend architecture.</p>
-            <div class="project__stack"><span>React/TS/Vite</span></div>
-          </div>
-        </article>
-        <article class="project reveal" data-cat="ecommerce">
-          <div class="project__body">
-            <span class="project__tag">E-commerce</span>
-            <h3>MFTop Store</h3>
-            <p>Reusable scalable store template.</p>
-            <div class="project__stack"><span>React</span></div>
-          </div>
-        </article>
+  <!-- MOBILE MENU DRAWER -->
+  <div class="mobile-drawer" id="mobileMenu" aria-hidden="true">
+    <div class="mobile-drawer-inner">
+      <ul class="mobile-nav-list">
+        <li><a href="#profile" class="mobile-nav-link">About</a></li>
+        <li><a href="#work" class="mobile-nav-link">Work</a></li>
+        <li><a href="#skills" class="mobile-nav-link">Expertise</a></li>
+        <li><a href="#sites" class="mobile-nav-link">Live Sites</a></li>
+        <li><a href="#timeline" class="mobile-nav-link">Journey</a></li>
+        <li><a href="#contact" class="mobile-nav-link">Contact</a></li>
+      </ul>
+      <div class="mobile-drawer-footer">
+        <a href="#contact" class="btn btn-primary btn-block">Get in Touch</a>
       </div>
     </div>
   </div>
-</section>
 
-    <!-- LIVE SITES -->
-    <section class="section river-section" id="sites">
-      <div class="river-stream" id="riverStream">
-        <!-- SVG Waves for realism -->
-        <svg class="wave-svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
-          <path fill="rgba(139, 92, 246, 0.1)"
-            d="M0,160L48,170.7C96,181,192,203,288,208C384,213,480,203,576,170.7C672,139,768,85,864,85.3C960,85,1056,139,1152,149.3C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z">
-          </path>
-        </svg>
-        <svg class="wave-svg wave-svg-2" viewBox="0 0 1440 320" preserveAspectRatio="none">
-          <path fill="rgba(168, 85, 247, 0.15)"
-            d="M0,224L48,213.3C96,203,192,181,288,186.7C384,192,480,224,576,218.7C672,213,768,171,864,149.3C960,128,1056,128,1152,149.3C1248,171,1344,213,1392,234.7L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z">
-          </path>
-        </svg>
+  <main id="main-content">
+
+    <!-- HERO SECTION -->
+    <section class="hero-section" id="home">
+      <div class="container hero-grid">
+        
+        <!-- Left: Copy & Actions -->
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span class="status-dot"></span>
+            <span class="badge-text">Full-Stack Developer &amp; Voice Engineer</span>
+          </div>
+
+          <h1 class="hero-title">
+            <span class="hero-name">Waheeb Ullah</span>
+            <span class="hero-tagline">I build immersive websites and intelligent voice systems.</span>
+          </h1>
+
+          <p class="hero-description">
+            From interactive frontends to real-time communication platforms, I turn complex ideas into practical digital experiences.
+          </p>
+
+          <!-- Reserved single-line supporting status / typewriter -->
+          <div class="hero-typewriter-wrapper" aria-label="Specialization Highlights">
+            <i class="fa-solid fa-terminal prompt-icon" aria-hidden="true"></i>
+            <span id="typewriterText" class="typewriter-text">Specializing in FreeSWITCH, WebRTC, Three.js &amp; Voice AI systems.</span>
+          </div>
+
+          <div class="hero-actions">
+            <a href="#work" class="btn btn-primary hero-btn">
+              <span>View Projects</span>
+              <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+            </a>
+            <a href="#contact" class="btn btn-secondary hero-btn">
+              <span>Contact Me</span>
+              <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+            </a>
+          </div>
+
+          <!-- Quick capability tags -->
+          <div class="hero-tech-pills">
+            <span class="tech-pill"><i class="fa-solid fa-phone-volume"></i> Telephony &amp; SIP</span>
+            <span class="tech-pill"><i class="fa-solid fa-cubes"></i> Three.js / WebGL</span>
+            <span class="tech-pill"><i class="fa-solid fa-microchip"></i> Voice AI Agents</span>
+            <span class="tech-pill"><i class="fa-brands fa-react"></i> React &amp; Next.js</span>
+          </div>
+        </div>
+
+        <!-- Right: 3D Voice-Wave Stage -->
+        <div class="hero-stage-container">
+          <div class="hero-stage" id="hero-3d-stage" aria-label="Interactive 3D Voice-Wave Sculpture">
+            <!-- Three.js Canvas inserted dynamically -->
+            <noscript>
+              <div class="stage-fallback">
+                <div class="waveform-bars">
+                  <span></span><span></span><span></span><span></span><span></span>
+                </div>
+                <p>Interactive 3D Voice Sculpture</p>
+              </div>
+            </noscript>
+          </div>
+          <div class="stage-caption">
+            <i class="fa-solid fa-wave-square"></i>
+            <span>Interactive Voice-Wave Mesh</span>
+          </div>
+        </div>
+
       </div>
 
-      <div class="section-header" style="position: relative; z-index: 2;">
-        <span class="section__label reveal">// 01 — profile.json</span>
-        <h2 class="section__title glitch-heading">Architecting the <span class="text-grad">impossible.</span></h2>
-      </div>
-
-      <div class="river-rocks reveal" id="riverRocks" style="position: relative; z-index: 2;">
-        <a href="https://controvallc.com" target="_blank" class="skill-chip rock-chip"><i
-            class="fa-solid fa-globe"></i><span>controvallc.com</span></a>
-        <a href="https://siparch.com" target="_blank" class="skill-chip rock-chip"><i
-            class="fa-solid fa-globe"></i><span>siparch.com</span></a>
-        <a href="https://hyperstackdev.com" target="_blank" class="skill-chip rock-chip"><i
-            class="fa-solid fa-globe"></i><span>hyperstackdev.com</span></a>
-        <a href="https://finservicex.com" target="_blank" class="skill-chip rock-chip"><i
-            class="fa-solid fa-globe"></i><span>finservicex.com</span></a>
-        <a href="https://maxveras.com" target="_blank" class="skill-chip rock-chip"><i
-            class="fa-solid fa-globe"></i><span>maxveras.com</span></a>
-        <a href="https://totalofficeab.com" target="_blank" class="skill-chip rock-chip"><i
-            class="fa-solid fa-globe"></i><span>totalofficeab.com</span></a>
-        <a href="https://thelionessco.com.au" target="_blank" class="skill-chip rock-chip"><i
-            class="fa-solid fa-globe"></i><span>thelionessco.com.au</span></a>
-        <a href="https://signagecrafting.com" target="_blank" class="skill-chip rock-chip"><i
-            class="fa-solid fa-globe"></i><span>signagecrafting.com</span></a>
-        <a href="https://laptopsworld.pk" target="_blank" class="skill-chip rock-chip"><i
-            class="fa-solid fa-globe"></i><span>laptopsworld.pk</span></a>
-        <a href="https://mftop.store" target="_blank" class="skill-chip rock-chip"><i
-            class="fa-solid fa-globe"></i><span>mftop.store</span></a>
-        <a href="https://osdon.co" target="_blank" class="skill-chip rock-chip"><i
-            class="fa-solid fa-globe"></i><span>osdon.co</span></a>
-      </div>
+      <a href="#profile" class="hero-scroll-indicator" aria-label="Scroll down to About section">
+        <span class="scroll-text">Scroll to explore</span>
+        <i class="fa-solid fa-chevron-down scroll-arrow" aria-hidden="true"></i>
+      </a>
     </section>
 
-    <!-- TIMELINE -->
-    <section class="section section--alt" id="timeline">
-      <!-- Geo Shape: Pyramid -->
-      <div class="geo-shape geo-pyramid" style="top: 15%; right: 10%;">
-        <div class="geo-face"></div><div class="geo-face"></div><div class="geo-face"></div><div class="geo-face"></div>
-        <div class="geo-face base"></div>
-      </div>
 
-      <p class="section__label reveal">// 06 — journey.log</p>
-      <h2 class="section__title lift-heading">My <span class="text-grad">journey.</span></h2>
-
-      <div class="timeline" id="journeyTimeline">
-        <svg class="timeline__track" viewBox="0 0 100 100" preserveAspectRatio="none">
-          <path class="track-bg" d="M 50 0 C 20 12, 20 22, 50 33 C 80 45, 80 55, 50 66 C 20 78, 20 88, 50 100" vector-effect="non-scaling-stroke" />
-          <path class="track-progress" id="timelineProgress" d="M 50 0 C 20 12, 20 22, 50 33 C 80 45, 80 55, 50 66 C 20 78, 20 88, 50 100" vector-effect="non-scaling-stroke" />
-        </svg>
-
-        <div class="tl-item reveal tl-item--left">
-          <div class="tl-item__content">
-            <span class="tl-item__date">2024 — present</span>
-            <h3>Senior Full-Stack & Voice Engineer</h3>
-            <p>Building carrier-grade SIP routing infrastructure, multi-tenant contact centers, and sub-second voice AI
-              agents.</p>
-          </div>
-          <div class="tl-item__dot"></div>
+    <!-- ABOUT / PROFILE SECTION -->
+    <section class="section profile-section" id="profile">
+      <div class="container">
+        
+        <div class="section-header">
+          <span class="section-kicker">// 01 — IDENTITY &amp; BACKGROUND</span>
+          <h2 class="section-title">About <span class="text-gradient">Me.</span></h2>
+          <p class="section-subtitle">Bridging low-latency telephony infrastructure with fluid, modern web engineering.</p>
         </div>
 
-        <div class="tl-item reveal tl-item--right">
-          <div class="tl-item__content">
-            <span class="tl-item__date">2022 — 2024</span>
-            <h3>AI Systems Builder</h3>
-            <p>Developed production SaaS platforms, agentic B2B intelligence tools, and multi-provider AI chat
-              architectures.</p>
+        <div class="profile-card">
+          <div class="profile-photo-col">
+            <div class="profile-avatar-frame">
+              <img src="profile.png" alt="Waheeb Ullah portrait" class="profile-avatar-img" onerror="this.onerror=null; this.src='profile.jpg';">
+              <div class="avatar-glow"></div>
+            </div>
+            <div class="profile-location-badge">
+              <i class="fa-solid fa-location-dot"></i>
+              <span>Pakistan (Remote / Worldwide)</span>
+            </div>
           </div>
-          <div class="tl-item__dot"></div>
-        </div>
 
-        <div class="tl-item reveal tl-item--left">
-          <div class="tl-item__content">
-            <span class="tl-item__date">2021 — 2022</span>
-            <h3>Full-Stack Developer</h3>
-            <p>Crafted immersive 3D web experiences, optimized e-commerce frontends, and designed robust RESTful APIs.
+          <div class="profile-bio-col">
+            <h3 class="profile-heading">Full-Stack Architect &amp; Real-Time Voice Specialist</h3>
+            <p class="profile-text">
+              I specialize in designing and deploying end-to-end communication systems, scalable web applications, and interactive 3D digital experiences. With extensive hands-on experience in carrier-grade VoIP routing (FreeSWITCH, Kamailio, Asterisk) and sub-second Voice AI agents, I help organizations build resilient, mission-critical technology.
             </p>
+            <p class="profile-text">
+              Whether architecting a multi-tenant contact center, fine-tuning ultra-low latency speech-to-speech pipelines, or delivering rich WebGL applications, my focus is always on high performance, clean maintainable code, and exceptional user experience.
+            </p>
+
+            <div class="profile-stats-grid">
+              <div class="stat-box">
+                <span class="stat-number">5,000+</span>
+                <span class="stat-label">Concurrent VoIP Calls Handled</span>
+              </div>
+              <div class="stat-box">
+                <span class="stat-number">&lt;600ms</span>
+                <span class="stat-label">Voice AI Agent Latency</span>
+              </div>
+              <div class="stat-box">
+                <span class="stat-number">25+</span>
+                <span class="stat-label">Delivered Projects &amp; Platforms</span>
+              </div>
+              <div class="stat-box">
+                <span class="stat-number">100%</span>
+                <span class="stat-label">Remote Worldwide Availability</span>
+              </div>
+            </div>
           </div>
-          <div class="tl-item__dot"></div>
         </div>
+
       </div>
     </section>
 
-    <!-- CONTACT -->
-    <section class="section" id="contact">
-        <!-- Geo Shape: Dodecahedron (approximated) -->
-        <div class="geo-shape geo-dodecahedron" style="top: 40%; left: 5%;">
-          <div class="geo-face"></div><div class="geo-face"></div><div class="geo-face"></div><div class="geo-face"></div>
+
+    <!-- FEATURED WORK SECTION -->
+    <section class="section work-section" id="work">
+      <div class="container">
+
+        <div class="section-header">
+          <span class="section-kicker">// 02 — SELECTED WORK</span>
+          <h2 class="section-title">Featured <span class="text-gradient">Projects.</span></h2>
+          <p class="section-subtitle">A curated selection of production software, voice pipelines, and 3D web applications.</p>
         </div>
 
-        <p class="section__label reveal">// 07 — contact.send()</p>
-        <div class="contact">
-          <div class="contact__intro reveal">
-            <h2 class="spotlight-heading">Let's build something <span class="text-grad">great together.</span></h2>
-            <p class="smoky-desc">Have a project in mind, or just want to say hi? My inbox is always open.</p>
-            <div class="contact__info">
-              <a href="mailto:uiwibi@gmail.com"><i class="fa-solid fa-envelope"></i>uiwibi@gmail.com</a>
-              <a href="#"><i class="fa-solid fa-location-dot"></i>Pakistan (Remote / Worldwide)</a>
+        <!-- Featured Projects Showcase Grid -->
+        <div class="featured-projects-list">
+
+          <!-- Featured Project 1: Clarion Platform -->
+          <article class="featured-card">
+            <div class="featured-media">
+              <div class="media-frame">
+                <img src="clarion.png" alt="Clarion Contact Center Platform Dashboard" class="featured-img" loading="lazy">
+              </div>
+              <div class="media-tag">Flagship Product</div>
             </div>
-            <div class="contact__socials">
-              <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
-              <a href="https://wa.me/923166922090" target="_blank" aria-label="WhatsApp"><i
-                  class="fa-brands fa-whatsapp"></i></a>
+            <div class="featured-body">
+              <div class="featured-category"><i class="fa-solid fa-server"></i> Voice Infrastructure &amp; Full-Stack</div>
+              <h3 class="featured-title">Clarion Platform</h3>
+              <p class="featured-summary">
+                A multi-tenant enterprise contact center platform engineered from the ground up to unify telephony, agent workflows, and live intelligence.
+              </p>
+              
+              <div class="featured-details">
+                <div class="detail-item">
+                  <strong>Problem:</strong> Fragmented telephony tools and lack of real-time transcription in legacy call-center suites.
+                </div>
+                <div class="detail-item">
+                  <strong>Contribution:</strong> Architected the entire core: agent cockpit, live speech transcription, dialplan manager, SIP gateway orchestration, campaign pipelines, and full Arabic RTL support.
+                </div>
+              </div>
+
+              <div class="tech-stack-list">
+                <span class="stack-tag">FreeSWITCH</span>
+                <span class="stack-tag">Asterisk</span>
+                <span class="stack-tag">React</span>
+                <span class="stack-tag">Node.js</span>
+                <span class="stack-tag">PostgreSQL</span>
+                <span class="stack-tag">Redis</span>
+                <span class="stack-tag">WebSockets</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Featured Project 2: Voice AI Eligibility Engine -->
+          <article class="featured-card featured-card--reverse">
+            <div class="featured-media placeholder-media">
+              <div class="tech-visual-card">
+                <i class="fa-solid fa-headset visual-icon"></i>
+                <h4>Sub-600ms Voice Pipeline</h4>
+                <p>Deepgram STT ➔ Llama-3 ➔ Cartesia TTS</p>
+                <div class="audio-wave-bars">
+                  <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                </div>
+              </div>
+            </div>
+            <div class="featured-body">
+              <div class="featured-category"><i class="fa-solid fa-robot"></i> Real-Time Voice AI</div>
+              <h3 class="featured-title">Voice AI Eligibility Engine</h3>
+              <p class="featured-summary">
+                An ultra-low latency conversational AI engine capable of holding real-time natural phone conversations for instant customer qualification.
+              </p>
+              
+              <div class="featured-details">
+                <div class="detail-item">
+                  <strong>Problem:</strong> Standard AI voice bots suffered from 2–3s round-trip latency, breaking natural conversational flow.
+                </div>
+                <div class="detail-item">
+                  <strong>Contribution:</strong> Engineered streaming audio WebSocket bridges, asynchronous token streaming, and voice activity interruption detection (VAD) to achieve sub-600ms latency.
+                </div>
+              </div>
+
+              <div class="tech-stack-list">
+                <span class="stack-tag">Deepgram STT</span>
+                <span class="stack-tag">Llama-3</span>
+                <span class="stack-tag">Cartesia TTS</span>
+                <span class="stack-tag">WebSockets</span>
+                <span class="stack-tag">Python</span>
+                <span class="stack-tag">Node.js</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Featured Project 3: Controva Intelligence Platform -->
+          <article class="featured-card">
+            <div class="featured-media placeholder-media">
+              <div class="tech-visual-card">
+                <i class="fa-solid fa-brain visual-icon"></i>
+                <h4>Agentic Lead-Gen Intelligence</h4>
+                <p>Automated Discovery, Gemini Scoring &amp; Enrichment</p>
+                <a href="https://controvallc.com" target="_blank" rel="noopener noreferrer" class="visual-live-link">
+                  <span>Visit controvallc.com</span>
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+              </div>
+            </div>
+            <div class="featured-body">
+              <div class="featured-category"><i class="fa-solid fa-network-wired"></i> Agentic AI &amp; B2B SaaS</div>
+              <h3 class="featured-title">Controva Intelligence Platform</h3>
+              <p class="featured-summary">
+                Autonomous B2B market discovery and lead intelligence platform integrating multi-source discovery, deep AI scraping, and personalized outreach.
+              </p>
+              
+              <div class="featured-details">
+                <div class="detail-item">
+                  <strong>Problem:</strong> High manual labor and low accuracy in traditional business lead qualification and market research.
+                </div>
+                <div class="detail-item">
+                  <strong>Contribution:</strong> Built scraping pipelines with Crawl4AI, Google Places &amp; OSM discovery, structured Gemini analysis, and automated PostgreSQL database ingestion.
+                </div>
+              </div>
+
+              <div class="tech-stack-list">
+                <span class="stack-tag">Python</span>
+                <span class="stack-tag">Gemini API</span>
+                <span class="stack-tag">PostgreSQL</span>
+                <span class="stack-tag">Crawl4AI</span>
+                <span class="stack-tag">FastAPI</span>
+              </div>
+
+              <div class="featured-actions">
+                <a href="https://controvallc.com" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">
+                  <span>Live Platform</span>
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Featured Project 4: Siparch 3D Portal -->
+          <article class="featured-card featured-card--reverse">
+            <div class="featured-media placeholder-media">
+              <div class="tech-visual-card">
+                <i class="fa-solid fa-cube visual-icon"></i>
+                <h4>Immersive 3D Portal</h4>
+                <p>WebGL, Interactive Cameras &amp; Shader Choreography</p>
+                <a href="https://siparch.com" target="_blank" rel="noopener noreferrer" class="visual-live-link">
+                  <span>Visit siparch.com</span>
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+              </div>
+            </div>
+            <div class="featured-body">
+              <div class="featured-category"><i class="fa-solid fa-vr-cardboard"></i> 3D Web &amp; Creative Frontend</div>
+              <h3 class="featured-title">Siparch 3D Enterprise Portal</h3>
+              <p class="featured-summary">
+                Interactive WebGL digital brand experience built with custom 3D models, smooth camera animation paths, and synchronized lighting choreography.
+              </p>
+              
+              <div class="featured-details">
+                <div class="detail-item">
+                  <strong>Problem:</strong> Modern enterprise needed an unforgettable visual identity to stand out in high-value client acquisitions.
+                </div>
+                <div class="detail-item">
+                  <strong>Contribution:</strong> Implemented 3D scene architecture in Three.js / React Three Fiber, custom GLSL lighting shaders, optimized mobile draw calls, and GSAP timeline synchronization.
+                </div>
+              </div>
+
+              <div class="tech-stack-list">
+                <span class="stack-tag">Three.js</span>
+                <span class="stack-tag">React Three Fiber</span>
+                <span class="stack-tag">GSAP</span>
+                <span class="stack-tag">WebGL</span>
+                <span class="stack-tag">GLSL</span>
+              </div>
+
+              <div class="featured-actions">
+                <a href="https://siparch.com" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">
+                  <span>Live Site</span>
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Featured Project 5: Laptops World -->
+          <article class="featured-card">
+            <div class="featured-media placeholder-media">
+              <div class="tech-visual-card">
+                <i class="fa-solid fa-cart-shopping visual-icon"></i>
+                <h4>High-Speed E-Commerce</h4>
+                <p>React, Supabase, Optimized Conversion Flow</p>
+                <a href="https://laptopsworld.pk" target="_blank" rel="noopener noreferrer" class="visual-live-link">
+                  <span>Visit laptopsworld.pk</span>
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+              </div>
+            </div>
+            <div class="featured-body">
+              <div class="featured-category"><i class="fa-solid fa-bag-shopping"></i> E-Commerce Architecture</div>
+              <h3 class="featured-title">Laptops World E-Commerce</h3>
+              <p class="featured-summary">
+                High-converting consumer technology e-commerce storefront optimized for sub-second page loads, SEO ranking, and frictionless checkout.
+              </p>
+              
+              <div class="featured-details">
+                <div class="detail-item">
+                  <strong>Problem:</strong> Slow legacy storefront with high cart abandonment and poor mobile search engine indexing.
+                </div>
+                <div class="detail-item">
+                  <strong>Contribution:</strong> Developed custom React frontend with instant search indexing, Supabase backend integration, Meta Pixel tracking, and dynamic product filtering.
+                </div>
+              </div>
+
+              <div class="tech-stack-list">
+                <span class="stack-tag">React</span>
+                <span class="stack-tag">TypeScript</span>
+                <span class="stack-tag">Vite</span>
+                <span class="stack-tag">Supabase</span>
+                <span class="stack-tag">Tailwind CSS</span>
+              </div>
+
+              <div class="featured-actions">
+                <a href="https://laptopsworld.pk" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">
+                  <span>Live Store</span>
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+              </div>
+            </div>
+          </article>
+
+        </div>
+
+        <!-- Project Archive / Filterable Library Header -->
+        <div class="archive-header-wrapper" id="archive">
+          <div class="archive-title-group">
+            <h3 class="archive-title">All Projects Archive <span class="archive-count">(25 Projects)</span></h3>
+            <p class="archive-desc">Filter through all delivered applications, voice infrastructure, and client systems.</p>
+          </div>
+
+          <!-- Category Filter Tabs -->
+          <div class="filter-tabs" role="tablist" aria-label="Project Categories">
+            <button class="filter-btn active" data-filter="all" role="tab" aria-selected="true">All (25)</button>
+            <button class="filter-btn" data-filter="voice" role="tab" aria-selected="false">Voice / Telephony (5)</button>
+            <button class="filter-btn" data-filter="saas" role="tab" aria-selected="false">SaaS &amp; AI (10)</button>
+            <button class="filter-btn" data-filter="web3d" role="tab" aria-selected="false">3D &amp; Frontend (7)</button>
+            <button class="filter-btn" data-filter="ecommerce" role="tab" aria-selected="false">E-commerce (3)</button>
+          </div>
+        </div>
+
+        <!-- Filterable Projects Responsive Grid -->
+        <div class="projects-archive-grid" id="projectsArchiveGrid">
+
+          <!-- VOICE / TELEPHONY (5) -->
+          <div class="archive-card" data-category="voice">
+            <div class="archive-badge">Voice / Telephony</div>
+            <h4 class="archive-card-title">Clarion Platform</h4>
+            <p class="archive-card-desc">Multi-tenant contact-center platform: agent cockpit, live transcription, dialplan manager, SIP gateways.</p>
+            <div class="archive-stack">
+              <span>FreeSWITCH</span><span>Asterisk</span><span>React</span><span>Node</span>
             </div>
           </div>
 
-          <div class="workflow-anim reveal">
-            <div class="wf-step" style="--step: 1">
-              <div class="wf-icon"><i class="fa-solid fa-envelope-open-text"></i></div>
-              <div class="wf-text">
-                <h4>1. Initiate</h4>
-                <p>You send a request</p>
+          <div class="archive-card" data-category="voice">
+            <div class="archive-badge">Voice / Telephony</div>
+            <h4 class="archive-card-title">Wholesale VoIP Transit</h4>
+            <p class="archive-card-desc">High-capacity carrier transit handling 5,000+ concurrent calls via robust SIP proxy routing and SBC failover.</p>
+            <div class="archive-stack">
+              <span>Kamailio</span><span>RTPEngine</span><span>SIP</span><span>Linux</span>
+            </div>
+          </div>
+
+          <div class="archive-card" data-category="voice">
+            <div class="archive-badge">Voice / Telephony</div>
+            <h4 class="archive-card-title">Voice AI Eligibility Engine</h4>
+            <p class="archive-card-desc">Sub-600ms latency telephony voice agent for automated customer verification and real-time intake.</p>
+            <div class="archive-stack">
+              <span>Deepgram</span><span>Llama-3</span><span>Cartesia</span><span>WebSockets</span>
+            </div>
+          </div>
+
+          <div class="archive-card" data-category="voice">
+            <div class="archive-badge">Voice / Telephony</div>
+            <h4 class="archive-card-title">Twilio Phone Web Client</h4>
+            <p class="archive-card-desc">In-browser calling and call-management interface with dynamic call routing, recording, and agent presence.</p>
+            <div class="archive-stack">
+              <span>Twilio Voice SDK</span><span>React</span><span>Supabase</span>
+            </div>
+          </div>
+
+          <div class="archive-card" data-category="voice">
+            <div class="archive-badge">Voice / Telephony</div>
+            <h4 class="archive-card-title">FreeSWITCH Infrastructure</h4>
+            <p class="archive-card-desc">Containerized FreeSWITCH media servers with mod_audio_pipe WebSocket bridging and ESL event automation.</p>
+            <div class="archive-stack">
+              <span>Docker</span><span>mod_audio_pipe</span><span>ESL</span><span>Node.js</span>
+            </div>
+          </div>
+
+          <!-- SAAS & AI (10) -->
+          <div class="archive-card" data-category="saas">
+            <div class="archive-badge">SaaS / AI</div>
+            <h4 class="archive-card-title">Controva Intelligence Platform</h4>
+            <p class="archive-card-desc">Autonomous B2B market discovery and lead pipeline with OSM geo-discovery, Gemini qualification, and Claude outreach.</p>
+            <div class="archive-stack">
+              <span>Python</span><span>PostgreSQL</span><span>Crawl4AI</span><span>Gemini</span>
+            </div>
+          </div>
+
+          <div class="archive-card" data-category="saas">
+            <div class="archive-badge">SaaS / AI</div>
+            <h4 class="archive-card-title">Controva AI Multi-Model Hub</h4>
+            <p class="archive-card-desc">Unified multi-provider AI chat interface aggregating 8+ LLM providers and 100+ production models.</p>
+            <div class="archive-stack">
+              <span>Next.js</span><span>LLMs</span><span>FastAPI</span><span>Streaming</span>
+            </div>
+          </div>
+
+          <div class="archive-card" data-category="saas">
+            <div class="archive-badge">SaaS / AI</div>
+            <h4 class="archive-card-title">ImagineStudio</h4>
+            <p class="archive-card-desc">Generative AI creative image and video production suite with canvas workflows and real-time generation.</p>
+            <div class="archive-stack">
+              <span>Generative AI</span><span>React</span><span>Canvas API</span>
+            </div>
+          </div>
+
+          <div class="archive-card" data-category="saas">
+            <div class="archive-badge">SaaS / AI</div>
+            <h4 class="archive-card-title">Luminus Proposal System</h4>
+            <p class="archive-card-desc">Multi-organization automated proposal engine generating compliant technical and financial proposals.</p>
+            <div class="archive-stack">
+              <span>Vue.js</span><span>AI APIs</span><span>Node.js</span>
+            </div>
+          </div>
+
+          <div class="archive-card" data-category="saas">
+            <div class="archive-badge">SaaS / AI</div>
+            <h4 class="archive-card-title">SignPrice AI Engine</h4>
+            <p class="archive-card-desc">Dynamic pricing and cost-estimation calculator designed specifically for architectural signage fabrication.</p>
+            <div class="archive-stack">
+              <span>AI Cost Models</span><span>Vue 3</span><span>PostgreSQL</span>
+            </div>
+          </div>
+
+          <div class="archive-card" data-category="saas">
+            <div class="archive-badge">SaaS / AI</div>
+            <h4 class="archive-card-title">Signage Proposal Automation</h4>
+            <p class="archive-card-desc">Automated visual proposal generator rendering signage mockups and estimating fabrication timelines.</p>
+            <div class="archive-stack">
+              <span>Vue 3</span><span>Supabase</span><span>Replicate</span>
+            </div>
+          </div>
+
+          <div class="archive-card" data-category="saas">
+            <div class="archive-badge">SaaS / AI</div>
+            <h4 class="archive-card-title">Agentic GTM Intelligence</h4>
+            <p class="archive-card-desc">Automated Go-To-Market lead scraping pipelines connected directly to CRM and outbound workflow triggers.</p>
+            <div class="archive-stack">
+              <span>Google Maps API</span><span>n8n</span><span>Python</span>
+            </div>
+          </div>
+
+          <div class="archive-card" data-category="saas">
+            <div class="archive-badge">SaaS / AI</div>
+            <h4 class="archive-card-title">PDF Extraction Microservice</h4>
+            <p class="archive-card-desc">High-precision document parser extracting structured tables, figures, and key-values from complex PDFs.</p>
+            <div class="archive-stack">
+              <span>FastAPI</span><span>Adobe PDF SDK</span><span>Gemini Pro</span>
+            </div>
+          </div>
+
+          <div class="archive-card" data-category="saas">
+            <div class="archive-badge">SaaS / AI</div>
+            <h4 class="archive-card-title">Luminus Custom CRM</h4>
+            <p class="archive-card-desc">Modular customer relationship management backend with role-based access control and analytics telemetry.</p>
+            <div class="archive-stack">
+              <span>TypeScript</span><span>PL/pgSQL</span><span>PostgreSQL</span>
+            </div>
+          </div>
+
+          <div class="archive-card" data-category="saas">
+            <div class="archive-badge">SaaS / AI</div>
+            <h4 class="archive-card-title">WhatsApp Business Pipeline</h4>
+            <p class="archive-card-desc">Meta-compliant automated business messaging backend managing template notifications and interactive responses.</p>
+            <div class="archive-stack">
+              <span>Twilio API</span><span>WhatsApp Cloud API</span><span>Node</span>
+            </div>
+          </div>
+
+          <!-- 3D & FRONTEND (7) -->
+          <div class="archive-card" data-category="web3d">
+            <div class="archive-badge">3D / Frontend</div>
+            <h4 class="archive-card-title">Siparch Enterprise 3D</h4>
+            <p class="archive-card-desc">3D brand website with custom geometric shaders, dynamic lighting controls, and camera sequences.</p>
+            <div class="archive-stack">
+              <span>Three.js</span><span>React Three Fiber</span><span>GSAP</span>
+            </div>
+          </div>
+
+          <div class="archive-card" data-category="web3d">
+            <div class="archive-badge">3D / Frontend</div>
+            <h4 class="archive-card-title">Quantum Canvas</h4>
+            <p class="archive-card-desc">13-phase synchronized interactive WebGL sequence with audio-reactive visual particles and smooth scroll physics.</p>
+            <div class="archive-stack">
+              <span>Three.js</span><span>GSAP</span><span>Web Audio API</span>
+            </div>
+          </div>
+
+          <div class="archive-card" data-category="web3d">
+            <div class="archive-badge">3D / Frontend</div>
+            <h4 class="archive-card-title">PHOSPHOR Studio</h4>
+            <p class="archive-card-desc">Ultra-lightweight zero-dependency WebGL experiments and custom fragment shader playground.</p>
+            <div class="archive-stack">
+              <span>WebGL</span><span>GLSL</span><span>Vanilla JS</span>
+            </div>
+          </div>
+
+          <div class="archive-card" data-category="web3d">
+            <div class="archive-badge">3D / Frontend</div>
+            <h4 class="archive-card-title">Controva Agency Builds</h4>
+            <p class="archive-card-desc">High-impact interactive agency concepts featuring volumetric lighting and 3D product visualizers.</p>
+            <div class="archive-stack">
+              <span>Next.js 15</span><span>React Three Fiber</span><span>Tailwind</span>
+            </div>
+          </div>
+
+          <div class="archive-card" data-category="web3d">
+            <div class="archive-badge">3D / Frontend</div>
+            <h4 class="archive-card-title">The Lioness Co</h4>
+            <p class="archive-card-desc">Creative agency portfolio featuring smooth organic liquid shaders and bespoke typography layout.</p>
+            <div class="archive-stack">
+              <span>WebGL</span><span>GSAP</span><span>HTML5</span>
+            </div>
+          </div>
+
+          <div class="archive-card" data-category="web3d">
+            <div class="archive-badge">3D / Frontend</div>
+            <h4 class="archive-card-title">PAKMEC Engineering</h4>
+            <p class="archive-card-desc">High-performance corporate engineering website with static site generation and dynamic project showcases.</p>
+            <div class="archive-stack">
+              <span>Next.js SSG</span><span>TypeScript</span><span>Tailwind</span>
+            </div>
+          </div>
+
+          <div class="archive-card" data-category="web3d">
+            <div class="archive-badge">3D / Frontend</div>
+            <h4 class="archive-card-title">Premium Template Library</h4>
+            <p class="archive-card-desc">Modular library of accessible, production-ready frontend components, micro-animations, and layouts.</p>
+            <div class="archive-stack">
+              <span>HTML5</span><span>CSS Modules</span><span>JavaScript</span>
+            </div>
+          </div>
+
+          <!-- E-COMMERCE (3) -->
+          <div class="archive-card" data-category="ecommerce">
+            <div class="archive-badge">E-commerce</div>
+            <h4 class="archive-card-title">Laptops World</h4>
+            <p class="archive-card-desc">Full-featured electronics store with real-time stock sync, advanced filter faceted search, and pixel tracking.</p>
+            <div class="archive-stack">
+              <span>React</span><span>TypeScript</span><span>Supabase</span>
+            </div>
+          </div>
+
+          <div class="archive-card" data-category="ecommerce">
+            <div class="archive-badge">E-commerce</div>
+            <h4 class="archive-card-title">OSDON Commerce</h4>
+            <p class="archive-card-desc">Performance-first retail storefront architecture featuring instant prefetching and optimized image delivery.</p>
+            <div class="archive-stack">
+              <span>React</span><span>TypeScript</span><span>Vite</span>
+            </div>
+          </div>
+
+          <div class="archive-card" data-category="ecommerce">
+            <div class="archive-badge">E-commerce</div>
+            <h4 class="archive-card-title">MFTop Store</h4>
+            <p class="archive-card-desc">Reusable, scalable digital commerce storefront template with modular checkout and catalog management.</p>
+            <div class="archive-stack">
+              <span>React</span><span>Tailwind</span><span>Node.js</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- EXPERTISE / SKILLS SECTION -->
+    <section class="section skills-section" id="skills">
+      <div class="container">
+
+        <div class="section-header">
+          <span class="section-kicker">// 03 — TECHNICAL CAPABILITIES</span>
+          <h2 class="section-title">Core <span class="text-gradient">Expertise.</span></h2>
+          <p class="section-subtitle">A focused breakdown of tools, frameworks, and protocols I use to build reliable software.</p>
+        </div>
+
+        <div class="skills-grid">
+          
+          <!-- Category 1: Voice & Telephony -->
+          <div class="skill-card">
+            <div class="skill-card-icon">
+              <i class="fa-solid fa-phone-volume"></i>
+            </div>
+            <h3 class="skill-card-title">Voice &amp; Telephony</h3>
+            <p class="skill-card-desc">Architecting robust VoIP infrastructure, carrier interconnects, and real-time SIP communications.</p>
+            <ul class="skill-pill-list">
+              <li>FreeSWITCH</li>
+              <li>Kamailio</li>
+              <li>Asterisk</li>
+              <li>WebRTC</li>
+              <li>SIP Protocol</li>
+              <li>RTPEngine</li>
+              <li>Twilio Voice SDK</li>
+              <li>VoIP Transit &amp; SBCs</li>
+            </ul>
+          </div>
+
+          <!-- Category 2: Full-Stack & Backend -->
+          <div class="skill-card">
+            <div class="skill-card-icon">
+              <i class="fa-solid fa-server"></i>
+            </div>
+            <h3 class="skill-card-title">Full-Stack &amp; Backend</h3>
+            <p class="skill-card-desc">Developing scalable backend architectures, high-performance APIs, and data models.</p>
+            <ul class="skill-pill-list">
+              <li>Node.js / Express</li>
+              <li>Python / FastAPI</li>
+              <li>TypeScript</li>
+              <li>React / Next.js</li>
+              <li>Vue.js</li>
+              <li>PostgreSQL</li>
+              <li>Redis</li>
+              <li>Docker &amp; Linux</li>
+            </ul>
+          </div>
+
+          <!-- Category 3: Voice AI & LLMs -->
+          <div class="skill-card">
+            <div class="skill-card-icon">
+              <i class="fa-solid fa-microchip"></i>
+            </div>
+            <h3 class="skill-card-title">Voice AI &amp; Intelligent Agents</h3>
+            <p class="skill-card-desc">Building streaming speech-to-speech agents, LLM pipelines, and automated intelligence tools.</p>
+            <ul class="skill-pill-list">
+              <li>Deepgram STT</li>
+              <li>Cartesia Sonic TTS</li>
+              <li>Llama-3 &amp; Gemini</li>
+              <li>Claude API</li>
+              <li>Voice Activity Detection (VAD)</li>
+              <li>WebSocket Streaming</li>
+              <li>Agentic Workflows</li>
+              <li>n8n Automation</li>
+            </ul>
+          </div>
+
+          <!-- Category 4: 3D & Creative Frontend -->
+          <div class="skill-card">
+            <div class="skill-card-icon">
+              <i class="fa-solid fa-cube"></i>
+            </div>
+            <h3 class="skill-card-title">3D &amp; Creative Frontend</h3>
+            <p class="skill-card-desc">Crafting responsive, GPU-accelerated web experiences with clean animation physics.</p>
+            <ul class="skill-pill-list">
+              <li>Three.js</li>
+              <li>WebGL &amp; GLSL</li>
+              <li>React Three Fiber</li>
+              <li>GSAP &amp; ScrollTrigger</li>
+              <li>Tailwind CSS</li>
+              <li>Modern Vanilla CSS</li>
+              <li>Responsive Systems</li>
+              <li>Web Performance (Core Vitals)</li>
+            </ul>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- VERIFIED LIVE SITES SHOWCASE -->
+    <section class="section sites-section" id="sites">
+      <div class="container">
+
+        <div class="section-header">
+          <span class="section-kicker">// 04 — DEPLOYED WORK</span>
+          <h2 class="section-title">Live <span class="text-gradient">Websites.</span></h2>
+          <p class="section-subtitle">Production websites and web platforms built and launched for clients worldwide.</p>
+        </div>
+
+        <div class="sites-grid">
+          <a href="https://controvallc.com" target="_blank" rel="noopener noreferrer" class="site-card">
+            <div class="site-card-header">
+              <i class="fa-solid fa-globe site-icon"></i>
+              <span class="site-domain">controvallc.com</span>
+              <i class="fa-solid fa-arrow-up-right-from-square site-link-icon"></i>
+            </div>
+            <p class="site-note">AI intelligence &amp; marketing platform</p>
+          </a>
+
+          <a href="https://siparch.com" target="_blank" rel="noopener noreferrer" class="site-card">
+            <div class="site-card-header">
+              <i class="fa-solid fa-globe site-icon"></i>
+              <span class="site-domain">siparch.com</span>
+              <i class="fa-solid fa-arrow-up-right-from-square site-link-icon"></i>
+            </div>
+            <p class="site-note">3D enterprise architectural portal</p>
+          </a>
+
+          <a href="https://hyperstackdev.com" target="_blank" rel="noopener noreferrer" class="site-card">
+            <div class="site-card-header">
+              <i class="fa-solid fa-globe site-icon"></i>
+              <span class="site-domain">hyperstackdev.com</span>
+              <i class="fa-solid fa-arrow-up-right-from-square site-link-icon"></i>
+            </div>
+            <p class="site-note">Engineering consultancy site</p>
+          </a>
+
+          <a href="https://finservicex.com" target="_blank" rel="noopener noreferrer" class="site-card">
+            <div class="site-card-header">
+              <i class="fa-solid fa-globe site-icon"></i>
+              <span class="site-domain">finservicex.com</span>
+              <i class="fa-solid fa-arrow-up-right-from-square site-link-icon"></i>
+            </div>
+            <p class="site-note">Financial services platform</p>
+          </a>
+
+          <a href="https://maxveras.com" target="_blank" rel="noopener noreferrer" class="site-card">
+            <div class="site-card-header">
+              <i class="fa-solid fa-globe site-icon"></i>
+              <span class="site-domain">maxveras.com</span>
+              <i class="fa-solid fa-arrow-up-right-from-square site-link-icon"></i>
+            </div>
+            <p class="site-note">Commercial enterprise brand</p>
+          </a>
+
+          <a href="https://totalofficeab.com" target="_blank" rel="noopener noreferrer" class="site-card">
+            <div class="site-card-header">
+              <i class="fa-solid fa-globe site-icon"></i>
+              <span class="site-domain">totalofficeab.com</span>
+              <i class="fa-solid fa-arrow-up-right-from-square site-link-icon"></i>
+            </div>
+            <p class="site-note">Office solutions &amp; furniture catalog</p>
+          </a>
+
+          <a href="https://thelionessco.com.au" target="_blank" rel="noopener noreferrer" class="site-card">
+            <div class="site-card-header">
+              <i class="fa-solid fa-globe site-icon"></i>
+              <span class="site-domain">thelionessco.com.au</span>
+              <i class="fa-solid fa-arrow-up-right-from-square site-link-icon"></i>
+            </div>
+            <p class="site-note">Australian creative agency website</p>
+          </a>
+
+          <a href="https://signagecrafting.com" target="_blank" rel="noopener noreferrer" class="site-card">
+            <div class="site-card-header">
+              <i class="fa-solid fa-globe site-icon"></i>
+              <span class="site-domain">signagecrafting.com</span>
+              <i class="fa-solid fa-arrow-up-right-from-square site-link-icon"></i>
+            </div>
+            <p class="site-note">Custom signage &amp; fabrication studio</p>
+          </a>
+
+          <a href="https://laptopsworld.pk" target="_blank" rel="noopener noreferrer" class="site-card">
+            <div class="site-card-header">
+              <i class="fa-solid fa-globe site-icon"></i>
+              <span class="site-domain">laptopsworld.pk</span>
+              <i class="fa-solid fa-arrow-up-right-from-square site-link-icon"></i>
+            </div>
+            <p class="site-note">Electronics &amp; laptop e-commerce</p>
+          </a>
+
+          <a href="https://mftop.store" target="_blank" rel="noopener noreferrer" class="site-card">
+            <div class="site-card-header">
+              <i class="fa-solid fa-globe site-icon"></i>
+              <span class="site-domain">mftop.store</span>
+              <i class="fa-solid fa-arrow-up-right-from-square site-link-icon"></i>
+            </div>
+            <p class="site-note">Digital retail merchandise store</p>
+          </a>
+
+          <a href="https://osdon.co" target="_blank" rel="noopener noreferrer" class="site-card">
+            <div class="site-card-header">
+              <i class="fa-solid fa-globe site-icon"></i>
+              <span class="site-domain">osdon.co</span>
+              <i class="fa-solid fa-arrow-up-right-from-square site-link-icon"></i>
+            </div>
+            <p class="site-note">Modern retail storefront</p>
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- JOURNEY / TIMELINE SECTION -->
+    <section class="section timeline-section" id="timeline">
+      <div class="container">
+
+        <div class="section-header">
+          <span class="section-kicker">// 05 — CAREER ROADMAP</span>
+          <h2 class="section-title">Professional <span class="text-gradient">Journey.</span></h2>
+          <p class="section-subtitle">Consistent growth across voice engineering, full-stack architecture, and AI systems.</p>
+        </div>
+
+        <div class="timeline-container">
+          <div class="timeline-line"></div>
+
+          <!-- Timeline item 1 -->
+          <div class="timeline-card">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <span class="timeline-date">2024 — Present</span>
+              <h3 class="timeline-role">Senior Full-Stack &amp; Voice Engineer</h3>
+              <p class="timeline-desc">
+                Architecting carrier-grade SIP routing systems, multi-tenant contact centers (Clarion), and sub-second Voice AI agents. Integrating high-throughput WebSockets and Asterisk/FreeSWITCH telephony bridges.
+              </p>
+            </div>
+          </div>
+
+          <!-- Timeline item 2 -->
+          <div class="timeline-card">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <span class="timeline-date">2022 — 2024</span>
+              <h3 class="timeline-role">AI Systems &amp; Platform Builder</h3>
+              <p class="timeline-desc">
+                Developed production SaaS platforms, automated B2B lead intelligence pipelines, and multi-provider LLM chat solutions with Python, PostgreSQL, and modern React architectures.
+              </p>
+            </div>
+          </div>
+
+          <!-- Timeline item 3 -->
+          <div class="timeline-card">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <span class="timeline-date">2021 — 2022</span>
+              <h3 class="timeline-role">Full-Stack Developer</h3>
+              <p class="timeline-desc">
+                Crafted immersive 3D web experiences, optimized e-commerce frontends, and designed robust RESTful APIs for international commercial clients.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- CONTACT SECTION -->
+    <section class="section contact-section" id="contact">
+      <div class="container">
+
+        <div class="section-header">
+          <span class="section-kicker">// 06 — COLLABORATION &amp; INQUIRIES</span>
+          <h2 class="section-title">Let's build something <span class="text-gradient">great together.</span></h2>
+          <p class="section-subtitle">Have a project in mind, need voice engineering expertise, or want to discuss a contract? My inbox is always open.</p>
+        </div>
+
+        <div class="contact-grid">
+          
+          <div class="contact-card">
+            <h3 class="contact-card-title">Get in Direct Touch</h3>
+            <p class="contact-card-text">
+              I am available for remote full-time, contract, and advisory engagements worldwide. Feel free to reach out via email or message me directly on WhatsApp.
+            </p>
+
+            <div class="contact-methods">
+              <a href="mailto:uiwibi@gmail.com" class="contact-method-item">
+                <div class="method-icon"><i class="fa-solid fa-envelope"></i></div>
+                <div class="method-info">
+                  <span class="method-label">Email</span>
+                  <span class="method-val">uiwibi@gmail.com</span>
+                </div>
+              </a>
+
+              <a href="https://wa.me/923166922090" target="_blank" rel="noopener noreferrer" class="contact-method-item">
+                <div class="method-icon"><i class="fa-brands fa-whatsapp"></i></div>
+                <div class="method-info">
+                  <span class="method-label">WhatsApp</span>
+                  <span class="method-val">+92 316 6922090</span>
+                </div>
+              </a>
+
+              <div class="contact-method-item">
+                <div class="method-icon"><i class="fa-solid fa-location-dot"></i></div>
+                <div class="method-info">
+                  <span class="method-label">Location</span>
+                  <span class="method-val">Pakistan (Remote / Worldwide)</span>
+                </div>
               </div>
             </div>
-            <div class="wf-line" style="--step: 1"></div>
-            
-            <div class="wf-step" style="--step: 2">
-              <div class="wf-icon"><i class="fa-solid fa-comments"></i></div>
-              <div class="wf-text">
-                <h4>2. Discuss</h4>
-                <p>We align on strategy</p>
-              </div>
+
+            <div class="contact-social-links">
+              <a href="https://github.com/mwaheeb12-source" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="GitHub Profile">
+                <i class="fa-brands fa-github"></i>
+              </a>
+              <a href="https://wa.me/923166922090" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="WhatsApp Chat">
+                <i class="fa-brands fa-whatsapp"></i>
+              </a>
+              <a href="mailto:uiwibi@gmail.com" class="social-btn" aria-label="Send Email">
+                <i class="fa-solid fa-envelope"></i>
+              </a>
             </div>
-            <div class="wf-line" style="--step: 2"></div>
+          </div>
+
+          <!-- Working Process Card -->
+          <div class="workflow-card">
+            <h3 class="workflow-title">Engagement Process</h3>
             
-            <div class="wf-step" style="--step: 3">
-              <div class="wf-icon"><i class="fa-solid fa-laptop-code"></i></div>
-              <div class="wf-text">
-                <h4>3. Build</h4>
-                <p>I build your solution</p>
+            <div class="process-steps">
+              <div class="process-step">
+                <div class="step-badge">1</div>
+                <div class="step-content">
+                  <h4>Initiate</h4>
+                  <p>Send an email or message outlining your technical requirements and objectives.</p>
+                </div>
               </div>
-            </div>
-            <div class="wf-line" style="--step: 3"></div>
-            
-            <div class="wf-step wf-step--final" style="--step: 4">
-              <div class="wf-icon"><i class="fa-solid fa-handshake-angle"></i></div>
-              <div class="wf-text">
-                <h4>4. Success</h4>
-                <p>Mutual satisfaction</p>
+
+              <div class="process-step">
+                <div class="step-badge">2</div>
+                <div class="step-content">
+                  <h4>Discovery &amp; Strategy</h4>
+                  <p>We review architecture, timeline, latency constraints, and deliverables.</p>
+                </div>
+              </div>
+
+              <div class="process-step">
+                <div class="step-badge">3</div>
+                <div class="step-content">
+                  <h4>Build &amp; Deploy</h4>
+                  <p>Rapid, high-quality development with continuous testing and deployment.</p>
+                </div>
+              </div>
+
+              <div class="process-step">
+                <div class="step-badge">4</div>
+                <div class="step-content">
+                  <h4>Scale &amp; Support</h4>
+                  <p>Production launch, performance monitoring, and ongoing system stability.</p>
+                </div>
               </div>
             </div>
           </div>
+
         </div>
-      </section>
+
+      </div>
+    </section>
 
   </main>
 
-  <!-- AI Chat Widget -->
-  <div class="robot-chat-ui" id="robotChatUI">
-    <div class="chat-header">
-      <div class="chat-avatar"><i class="fa-solid fa-robot"></i></div>
-      <div class="chat-header-info">
-        <h4>AI Assistant</h4>
-        <div class="status"><span class="status-dot"></span> Online</div>
+  <!-- AI ASSISTANT (Initially Minimized) -->
+  <div class="ai-widget-container">
+    
+    <!-- Floating Launcher Button (Starts Minimized) -->
+    <button id="chatLauncher" class="chat-launcher-btn" aria-label="Open AI Assistant" title="Chat with Wana AI Assistant">
+      <div class="launcher-avatar">
+        <i class="fa-solid fa-robot"></i>
       </div>
-      <div>
-        <button id="talkModeToggle" class="talk-mode-toggle" title="Toggle Talk Mode"><i
-            class="fa-solid fa-headset"></i></button>
-        <button id="chatMinimize" class="chat-toggle-btn" title="Minimize Chat"><i
-            class="fa-solid fa-minus"></i></button>
+      <span class="launcher-text">Ask AI Assistant</span>
+      <span class="online-indicator"></span>
+    </button>
+
+    <!-- Chat Modal UI (Opens only on user click) -->
+    <div class="robot-chat-ui hidden" id="robotChatUI" role="dialog" aria-label="AI Portfolio Assistant" aria-hidden="true">
+      <div class="chat-header">
+        <div class="chat-header-left">
+          <div class="chat-avatar"><i class="fa-solid fa-robot"></i></div>
+          <div class="chat-header-info">
+            <h4 class="chat-title">Wana AI Assistant</h4>
+            <div class="status"><span class="status-dot"></span> Online</div>
+          </div>
+        </div>
+        <div class="chat-header-controls">
+          <button id="talkModeToggle" class="chat-ctrl-btn" title="Toggle Audio Responses" aria-label="Toggle voice audio output">
+            <i class="fa-solid fa-volume-high" aria-hidden="true"></i>
+          </button>
+          <button id="chatMinimize" class="chat-ctrl-btn" title="Minimize Chat" aria-label="Minimize chat window">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+          </button>
+        </div>
       </div>
+
+      <div class="chat-history" id="chatHistory" aria-live="polite">
+        <div class="chat-msg chat-msg--bot">
+          <div class="msg-bubble">
+            Hello! I'm <strong>Wana</strong>, Waheeb's portfolio assistant. Ask me anything about his projects, voice engineering skills, or availability!
+          </div>
+        </div>
+      </div>
+
+      <form class="chat-input-form" id="chatForm">
+        <input type="text" id="chatInput" placeholder="Ask about skills, projects, contact..." required autocomplete="off" aria-label="Your message">
+        <button type="button" id="chatMic" class="chat-mic-btn" title="Voice Input" aria-label="Speech voice input">
+          <i class="fa-solid fa-microphone" aria-hidden="true"></i>
+        </button>
+        <button type="submit" class="chat-send-btn" title="Send Message" aria-label="Send message">
+          <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+        </button>
+      </form>
     </div>
-    <div class="chat-history" id="chatHistory"></div>
-    <form class="chat-input-form" id="chatForm">
-      <input type="text" id="chatInput" placeholder="Ask me anything..." required autocomplete="off">
-      <button type="button" id="chatMic" title="Voice Input"
-        style="background:none; border:none; color:var(--purple); font-size:1.2rem; cursor:pointer;"><i
-          class="fa-solid fa-microphone"></i></button>
-      <button type="submit"
-        style="background:none; border:none; color:var(--purple); font-size:1.2rem; cursor:pointer;"><i
-          class="fa-solid fa-paper-plane"></i></button>
-    </form>
+
   </div>
 
+
+  <!-- FOOTER -->
   <footer class="footer">
-    <div class="footer__inner">
-      <a href="#home" class="nav__logo"><span>&lt;</span>Wibi<span>/&gt;</span></a>
-      <p>Designed &amp; built by Wibi — © 2026.</p>
-      <a href="#home" class="footer__top magnetic" aria-label="Back to top"><i class="fa-solid fa-arrow-up"></i></a>
+    <div class="container footer-inner">
+      <div class="footer-left">
+        <a href="#home" class="footer-logo"><span>&lt;</span>Wibi<span>/&gt;</span></a>
+        <p class="footer-copy">Designed &amp; engineered by Waheeb Ullah — &copy; 2026. All rights reserved.</p>
+      </div>
+      <div class="footer-right">
+        <a href="#home" class="footer-back-top" aria-label="Back to top">
+          <span>Back to Top</span>
+          <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+        </a>
+      </div>
     </div>
   </footer>
-  </div>
 
-  <!-- Custom Cursor -->
-  <div class="cursor-glow" id="cursorGlow"></div>
-  <div class="custom-cursor" id="lusionCursor"></div>
-
-  <!-- Three.js for 3D Robot -->
+  <!-- Three.js (for bounded 3D Hero Sculpture) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="script.js?v=43"></script>
+  <script src="script.js?v=50"></script>
 </body>
+
 </html>
