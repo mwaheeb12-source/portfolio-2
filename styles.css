@@ -600,7 +600,7 @@ ul {
   color: var(--purple);
 }
 
-/* Hero 3D Stage */
+/* Hero 3D Stage (Floating Browser) */
 .hero-stage-container {
   display: flex;
   flex-direction: column;
@@ -612,14 +612,17 @@ ul {
 
 .hero-stage {
   width: 100%;
-  height: 480px;
-  max-height: 60vh;
+  height: 440px;
+  max-height: 58vh;
   position: relative;
   border-radius: var(--radius-lg);
-  background: radial-gradient(circle at center, var(--purple-subtle) 0%, transparent 70%);
+  background: radial-gradient(circle at 50% 50%, var(--purple-subtle) 0%, transparent 70%);
   border: 1px solid var(--border);
   overflow: hidden;
   touch-action: pan-y;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .hero-stage canvas {
@@ -631,52 +634,83 @@ ul {
 
 .stage-caption {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: var(--text-light);
-  display: flex;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  margin-top: 10px;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  transition: var(--transition);
+}
+
+.stage-caption:hover {
+  color: var(--purple);
+  border-color: var(--purple);
+  background: var(--purple-subtle);
 }
 
 .stage-caption i {
   color: var(--purple);
+  font-size: 0.75rem;
 }
 
-.stage-fallback {
-  width: 100%;
-  height: 100%;
+/* Fallback Browser Mockup */
+.stage-fallback-browser {
+  width: 90%;
+  max-width: 420px;
+  aspect-ratio: 16 / 10;
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: 0 15px 35px -5px var(--purple-glow), var(--card-shadow);
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  color: var(--text-muted);
 }
 
-.waveform-bars {
+.fallback-browser-bar {
+  height: 28px;
+  background: var(--bg-subtle);
+  border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
-  gap: 6px;
-  height: 40px;
+  padding: 0 12px;
+  gap: 10px;
 }
 
-.waveform-bars span {
-  width: 4px;
-  height: 100%;
-  background: var(--purple);
-  border-radius: 4px;
-  animation: wave-anim 1.2s ease-in-out infinite alternate;
+.fallback-dots {
+  display: flex;
+  gap: 5px;
 }
 
-.waveform-bars span:nth-child(2) { animation-delay: 0.2s; }
-.waveform-bars span:nth-child(3) { animation-delay: 0.4s; }
-.waveform-bars span:nth-child(4) { animation-delay: 0.6s; }
-.waveform-bars span:nth-child(5) { animation-delay: 0.8s; }
+.fallback-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4444;
+}
 
-@keyframes wave-anim {
-  0% { transform: scaleY(0.2); }
-  100% { transform: scaleY(1); }
+.fallback-dots span:nth-child(2) { background: #f59e0b; }
+.fallback-dots span:nth-child(3) { background: #10b981; }
+
+.fallback-address {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-light);
+  background: var(--bg);
+  padding: 2px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+.fallback-preview-img {
+  width: 100%;
+  height: calc(100% - 28px);
+  object-fit: cover;
 }
 
 .hero-scroll-indicator {
@@ -1298,79 +1332,7 @@ ul {
   color: var(--text-muted);
 }
 
-/* --------------------------------------------------------------------------
-   12. Journey / Timeline Section
-   -------------------------------------------------------------------------- */
-.timeline-container {
-  position: relative;
-  max-width: 800px;
-  margin: 0 auto;
-  padding-left: 32px;
-}
 
-.timeline-line {
-  position: absolute;
-  top: 10px;
-  bottom: 10px;
-  left: 7px;
-  width: 2px;
-  background: linear-gradient(180deg, var(--purple) 0%, var(--purple-light) 60%, transparent 100%);
-}
-
-.timeline-card {
-  position: relative;
-  margin-bottom: 48px;
-}
-
-.timeline-card:last-child {
-  margin-bottom: 0;
-}
-
-.timeline-dot {
-  position: absolute;
-  left: -32px;
-  top: 6px;
-  width: 16px;
-  height: 16px;
-  border-radius: var(--radius-full);
-  background: var(--bg);
-  border: 3px solid var(--purple);
-  box-shadow: 0 0 10px var(--purple-glow);
-}
-
-.timeline-content {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 28px 32px;
-  box-shadow: var(--card-shadow);
-  transition: var(--transition);
-}
-
-.timeline-card:hover .timeline-content {
-  border-color: var(--border-strong);
-  transform: translateX(4px);
-}
-
-.timeline-date {
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  color: var(--purple);
-  font-weight: 600;
-  margin-bottom: 6px;
-  display: inline-block;
-}
-
-.timeline-role {
-  font-size: 1.35rem;
-  margin-bottom: 10px;
-}
-
-.timeline-desc {
-  font-size: 0.95rem;
-  color: var(--text-muted);
-  line-height: 1.65;
-}
 
 /* --------------------------------------------------------------------------
    13. Contact Section

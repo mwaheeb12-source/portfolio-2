@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="styles.css?v=50">
+  <link rel="stylesheet" href="styles.css?v=52">
 </head>
 
 <body>
@@ -57,7 +57,6 @@
         <li><a href="#work" class="mobile-nav-link">Work</a></li>
         <li><a href="#skills" class="mobile-nav-link">Expertise</a></li>
         <li><a href="#sites" class="mobile-nav-link">Live Sites</a></li>
-        <li><a href="#timeline" class="mobile-nav-link">Journey</a></li>
         <li><a href="#contact" class="mobile-nav-link">Contact</a></li>
       </ul>
       <div class="mobile-drawer-footer">
@@ -114,23 +113,22 @@
           </div>
         </div>
 
-        <!-- Right: 3D Voice-Wave Stage -->
+        <!-- Right: 3D Floating Browser Stage -->
         <div class="hero-stage-container">
-          <div class="hero-stage" id="hero-3d-stage" aria-label="Interactive 3D Voice-Wave Sculpture">
-            <!-- Three.js Canvas inserted dynamically -->
-            <noscript>
-              <div class="stage-fallback">
-                <div class="waveform-bars">
-                  <span></span><span></span><span></span><span></span><span></span>
-                </div>
-                <p>Interactive 3D Voice Sculpture</p>
+          <div class="hero-stage" id="hero-3d-stage" aria-label="Interactive 3D Browser Showcase">
+            <!-- Fallback Browser Mockup (Visible by default; hidden only after 3D scene renders successfully) -->
+            <div class="stage-fallback-browser" id="hero-fallback-browser">
+              <div class="fallback-browser-bar">
+                <div class="fallback-dots"><span></span><span></span><span></span></div>
+                <div class="fallback-address">siparch.com</div>
               </div>
-            </noscript>
+              <img src="siparch_preview.png" alt="Siparch 3D Enterprise Portal preview" class="fallback-preview-img" width="1783" height="985" loading="eager">
+            </div>
           </div>
-          <div class="stage-caption">
-            <i class="fa-solid fa-wave-square"></i>
-            <span>Interactive Voice-Wave Mesh</span>
-          </div>
+          <a href="https://siparch.com" target="_blank" rel="noopener noreferrer" class="stage-caption" title="Open live project in new tab">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            <span>Featured Project: Siparch 3D Portal (siparch.com)</span>
+          </a>
         </div>
 
       </div>
@@ -890,67 +888,12 @@
     </section>
 
 
-    <!-- JOURNEY / TIMELINE SECTION -->
-    <section class="section timeline-section" id="timeline">
-      <div class="container">
-
-        <div class="section-header">
-          <span class="section-kicker">// 05 — CAREER ROADMAP</span>
-          <h2 class="section-title">Professional <span class="text-gradient">Journey.</span></h2>
-          <p class="section-subtitle">Consistent growth across voice engineering, full-stack architecture, and AI systems.</p>
-        </div>
-
-        <div class="timeline-container">
-          <div class="timeline-line"></div>
-
-          <!-- Timeline item 1 -->
-          <div class="timeline-card">
-            <div class="timeline-dot"></div>
-            <div class="timeline-content">
-              <span class="timeline-date">2024 — Present</span>
-              <h3 class="timeline-role">Senior Full-Stack &amp; Voice Engineer</h3>
-              <p class="timeline-desc">
-                Architecting carrier-grade SIP routing systems, multi-tenant contact centers (Clarion), and sub-second Voice AI agents. Integrating high-throughput WebSockets and Asterisk/FreeSWITCH telephony bridges.
-              </p>
-            </div>
-          </div>
-
-          <!-- Timeline item 2 -->
-          <div class="timeline-card">
-            <div class="timeline-dot"></div>
-            <div class="timeline-content">
-              <span class="timeline-date">2022 — 2024</span>
-              <h3 class="timeline-role">AI Systems &amp; Platform Builder</h3>
-              <p class="timeline-desc">
-                Developed production SaaS platforms, automated B2B lead intelligence pipelines, and multi-provider LLM chat solutions with Python, PostgreSQL, and modern React architectures.
-              </p>
-            </div>
-          </div>
-
-          <!-- Timeline item 3 -->
-          <div class="timeline-card">
-            <div class="timeline-dot"></div>
-            <div class="timeline-content">
-              <span class="timeline-date">2021 — 2022</span>
-              <h3 class="timeline-role">Full-Stack Developer</h3>
-              <p class="timeline-desc">
-                Crafted immersive 3D web experiences, optimized e-commerce frontends, and designed robust RESTful APIs for international commercial clients.
-              </p>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-    </section>
-
-
     <!-- CONTACT SECTION -->
     <section class="section contact-section" id="contact">
       <div class="container">
 
         <div class="section-header">
-          <span class="section-kicker">// 06 — COLLABORATION &amp; INQUIRIES</span>
+          <span class="section-kicker">// 05 — COLLABORATION &amp; INQUIRIES</span>
           <h2 class="section-title">Let's build something <span class="text-gradient">great together.</span></h2>
           <p class="section-subtitle">Have a project in mind, need voice engineering expertise, or want to discuss a contract? My inbox is always open.</p>
         </div>
@@ -1118,9 +1061,9 @@
     </div>
   </footer>
 
-  <!-- Three.js (for bounded 3D Hero Sculpture) -->
+  <!-- Three.js (for 3D Floating Browser Showcase) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="script.js?v=50"></script>
+  <script src="script.js?v=52"></script>
 </body>
 
 </html>

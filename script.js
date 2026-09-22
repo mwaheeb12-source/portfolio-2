@@ -2,7 +2,7 @@
  * Wibi Portfolio — Core Application & Interactive Logic
  * Owner: Waheeb Ullah (Wibi)
  * Features:
- *   - Three.js Parametric 3D Voice-Wave Sculpture
+ *   - Three.js Floating 3D Browser Showcase
  *   - Scroll Spy & Header Progress Indicator
  *   - Category Project Filtering
  *   - Light/Dark Theme Controller
@@ -108,6 +108,9 @@ function initTheme() {
       }
     }
     localStorage.setItem('wibi_theme', theme);
+    if (update3DBrowserTheme) {
+      update3DBrowserTheme(theme);
+    }
   };
 
   applyTheme(activeTheme);
@@ -167,188 +170,341 @@ function initTypewriter() {
 }
 
 // ==========================================================================
-// 5. Three.js Parametric Voice-Wave 3D Sculpture
+// 5. Three.js Floating 3D Browser Window
 // ==========================================================================
-function init3DVoiceSculpture() {
+let update3DBrowserTheme = null;
+
+function init3DFloatingBrowser() {
   const container = $('#hero-3d-stage');
+  const fallback = $('#hero-fallback-browser');
   if (!container) return;
 
-  // Verify WebGL availability
   if (typeof THREE === 'undefined') {
-    console.warn('Three.js library not loaded');
+    console.warn('Three.js library not loaded; retaining accessible project fallback.');
     return;
   }
 
-  let scene, camera, renderer, sculptureGroup, waveRibbon, innerCore, particleWave;
+  let scene, camera, renderer, browserGroup, frameMesh, toolbarMesh, addressMesh, screenMesh, shadowMesh;
   let isVisible = true;
+  let isSceneReady = false;
   let animFrameId = null;
-  let clock = new THREE.Clock();
+  const clock = new THREE.Clock();
 
-  // Mouse & Scroll orientation targets
-  let targetRotX = 0;
-  let targetRotY = 0;
-  let currentRotX = 0;
-  let currentRotY = 0;
+  // Reduced motion preference query and dynamic listener
+  const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let isReducedMotion = mediaQuery.matches;
+  mediaQuery.addEventListener('change', (e) => {
+    isReducedMotion = e.matches;
+    if (isReducedMotion && browserGroup) {
+      browserGroup.rotation.set(baseRotX, baseRotY, baseRotZ);
+      browserGroup.position.set(0, 0, 0);
+    }
+  });
+
+  // Base 3/4 resting angle orientation (in radians)
+  // ~13.7° Y-turn, ~4.6° X-tilt, -1.7° Z-roll
+  const baseRotX = 0.08;
+  const baseRotY = 0.24;
+  const baseRotZ = -0.03;
+
+  let targetRotX = baseRotX;
+  let targetRotY = baseRotY;
+  let currentRotX = baseRotX;
+  let currentRotY = baseRotY;
   let scrollProgress = 0;
 
+  // Helper to generate rounded rectangle shapes for satin chassis
+  function createRoundedRectShape(w, h, r) {
+    const shape = new THREE.Shape();
+    const x = -w / 2;
+    const y = -h / 2;
+    shape.moveTo(x + r, y);
+    shape.lineTo(x + w - r, y);
+    shape.absarc(x + w - r, y + r, r, -Math.PI / 2, 0, false);
+    shape.lineTo(x + w, y + h - r);
+    shape.absarc(x + w - r, y + h - r, r, 0, Math.PI / 2, false);
+    shape.lineTo(x + r, y + h);
+    shape.absarc(x + r, y + h - r, r, Math.PI / 2, Math.PI, false);
+    shape.lineTo(x, y + r);
+    shape.absarc(x + r, y + r, r, Math.PI, Math.PI * 1.5, false);
+    return shape;
+  }
+
   try {
-    // 1. Scene setup
+    // 1. Scene & Camera Setup
     scene = new THREE.Scene();
 
-    const width = container.clientWidth || 480;
-    const height = container.clientHeight || 480;
+    const w = container.clientWidth || 480;
+    const h = container.clientHeight || 440;
 
-    camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-    camera.position.set(0, 0, 8.5);
+    camera = new THREE.PerspectiveCamera(38, w / h, 0.1, 100);
 
     renderer = new THREE.WebGLRenderer({
       alpha: true,
       antialias: true,
       powerPreference: 'high-performance'
     });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.2;
-
-    container.innerHTML = '';
-    container.appendChild(renderer.domElement);
-
-    // 2. Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-    scene.add(ambientLight);
-
-    const purpleKeyLight = new THREE.PointLight(0xa855f7, 3.5, 30);
-    purpleKeyLight.position.set(5, 5, 6);
-    scene.add(purpleKeyLight);
-
-    const cyanFillLight = new THREE.PointLight(0x06b6d4, 2.2, 30);
-    cyanFillLight.position.set(-6, -4, 4);
-    scene.add(cyanFillLight);
-
-    const rimLight = new THREE.DirectionalLight(0xc084fc, 1.8);
-    rimLight.position.set(0, 8, -4);
-    scene.add(rimLight);
-
-    // 3. Sculpture Geometry: Parametric Voice Wave Loop (Torus Knot + Harmonic Ribbons)
-    sculptureGroup = new THREE.Group();
-
-    // Primary Voice Wave Ring (Torus Knot with Satin Purple Material)
-    const waveGeo = new THREE.TorusKnotGeometry(2.1, 0.45, 160, 36, 2, 3);
-    const waveMat = new THREE.MeshStandardMaterial({
-      color: 0x8b5cf6,
-      roughness: 0.28,
-      metalness: 0.65,
-      emissive: 0x2e1065,
-      emissiveIntensity: 0.35,
-      wireframe: false
-    });
-    waveRibbon = new THREE.Mesh(waveGeo, waveMat);
-    sculptureGroup.add(waveRibbon);
-
-    // Secondary Nested Signal Ring
-    const coreGeo = new THREE.TorusGeometry(1.4, 0.12, 24, 80);
-    const coreMat = new THREE.MeshStandardMaterial({
-      color: 0x06b6d4,
-      roughness: 0.15,
-      metalness: 0.85,
-      emissive: 0x083344,
-      emissiveIntensity: 0.5
-    });
-    innerCore = new THREE.Mesh(coreGeo, coreMat);
-    innerCore.rotation.x = Math.PI / 3;
-    sculptureGroup.add(innerCore);
-
-    // Outer Harmonic Orbit Particles (Voice Frequency Constellation)
-    const particleCount = 140;
-    const particleGeo = new THREE.BufferGeometry();
-    const positions = new Float32Array(particleCount * 3);
-    const colors = new Float32Array(particleCount * 3);
-
-    for (let i = 0; i < particleCount; i++) {
-      const u = Math.random() * Math.PI * 2;
-      const v = (Math.random() - 0.5) * Math.PI;
-      const rad = 3.2 + (Math.random() - 0.5) * 0.8;
-
-      positions[i * 3] = rad * Math.cos(v) * Math.cos(u);
-      positions[i * 3 + 1] = rad * Math.cos(v) * Math.sin(u);
-      positions[i * 3 + 2] = rad * Math.sin(v);
-
-      // Gradient purple to cyan
-      colors[i * 3] = 0.65 + Math.random() * 0.35;     // R
-      colors[i * 3 + 1] = 0.35 + Math.random() * 0.5; // G
-      colors[i * 3 + 2] = 0.95;                       // B
+    renderer.setSize(w, h);
+    // Cap pixel ratio to 2 for balanced rendering efficiency
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    if (renderer.outputEncoding !== undefined) {
+      renderer.outputEncoding = THREE.sRGBEncoding;
     }
 
-    particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    particleGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    // Dynamic Camera Distance calculation to guarantee 100% camera-fit across viewports
+    function fitCamera() {
+      if (!container || !renderer || !camera) return;
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+      if (width <= 0 || height <= 0) return;
 
-    const particleMat = new THREE.PointsMaterial({
-      size: 0.08,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.85
+      const aspect = width / height;
+      camera.aspect = aspect;
+
+      // Ensure full 4.84 x 3.04 model fits comfortably throughout rotation range
+      const modelWidth = 5.4;
+      const modelHeight = 3.6;
+      const vFovRad = (38 * Math.PI) / 180;
+      const distH = (modelHeight / 2) / Math.tan(vFovRad / 2);
+      const distW = (modelWidth / 2) / (Math.tan(vFovRad / 2) * aspect);
+      const targetZ = Math.max(distH, distW, 7.8);
+
+      camera.position.set(0, 0, targetZ);
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height);
+    }
+
+    fitCamera();
+
+    // 2. Lighting Setup
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.15);
+    scene.add(ambientLight);
+
+    const keyLight = new THREE.DirectionalLight(0xffffff, 1.35);
+    keyLight.position.set(4, 5, 6);
+    scene.add(keyLight);
+
+    const purpleAccentLight = new THREE.PointLight(0xa855f7, 2.2, 20);
+    purpleAccentLight.position.set(-4, -3, 3);
+    scene.add(purpleAccentLight);
+
+    const rimLight = new THREE.DirectionalLight(0xc084fc, 0.85);
+    rimLight.position.set(0, 6, -3);
+    scene.add(rimLight);
+
+    // 3. Floating Browser Model Construction
+    browserGroup = new THREE.Group();
+
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
+    // Satin Frame Material
+    const frameMat = new THREE.MeshStandardMaterial({
+      color: isDark ? 0x141724 : 0xf1f3f9,
+      roughness: 0.35,
+      metalness: 0.22
     });
 
-    particleWave = new THREE.Points(particleGeo, particleMat);
-    sculptureGroup.add(particleWave);
+    const toolbarMat = new THREE.MeshStandardMaterial({
+      color: isDark ? 0x1e2235 : 0xe2e8f0,
+      roughness: 0.45,
+      metalness: 0.15
+    });
 
-    scene.add(sculptureGroup);
+    const addressMat = new THREE.MeshStandardMaterial({
+      color: isDark ? 0x0f111a : 0xffffff,
+      roughness: 0.5,
+      metalness: 0.1
+    });
 
-    // 4. Pointer Interaction (Bounded inside hero)
+    // Outer Chassis Frame (Extruded Rounded Rectangle with subtle bevel)
+    const frameWidth = 4.8;
+    const frameHeight = 3.0;
+    const frameRadius = 0.14;
+    const chassisShape = createRoundedRectShape(frameWidth, frameHeight, frameRadius);
+    const frameGeo = new THREE.ExtrudeGeometry(chassisShape, {
+      depth: 0.08,
+      bevelEnabled: true,
+      bevelSegments: 3,
+      bevelSize: 0.02,
+      bevelThickness: 0.02
+    });
+    frameGeo.center();
+    frameMesh = new THREE.Mesh(frameGeo, frameMat);
+    browserGroup.add(frameMesh);
+
+    // Purple Chamfer Edge Outline
+    const edgesGeo = new THREE.EdgesGeometry(frameGeo, 24);
+    const edgeMat = new THREE.LineBasicMaterial({
+      color: isDark ? 0xa855f7 : 0x8b5cf6,
+      transparent: true,
+      opacity: isDark ? 0.6 : 0.45
+    });
+    const edgeLines = new THREE.LineSegments(edgesGeo, edgeMat);
+    browserGroup.add(edgeLines);
+
+    // Top Browser Toolbar
+    const toolbarHeight = 0.34;
+    const toolbarWidth = frameWidth - 0.14;
+    const toolbarGeo = new THREE.BoxGeometry(toolbarWidth, toolbarHeight, 0.02);
+    toolbarMesh = new THREE.Mesh(toolbarGeo, toolbarMat);
+    toolbarMesh.position.set(0, (frameHeight / 2) - (toolbarHeight / 2) - 0.07, 0.056);
+    browserGroup.add(toolbarMesh);
+
+    // 3 Window Control Dots (Red, Amber, Green)
+    const dotColors = [0xef4444, 0xf59e0b, 0x10b981];
+    const dotRadius = 0.045;
+    const dotStartX = - (toolbarWidth / 2) + 0.18;
+    const dotSpacing = 0.13;
+    const dotGeo = new THREE.CircleGeometry(dotRadius, 16);
+
+    dotColors.forEach((colorHex, idx) => {
+      const dotMat = new THREE.MeshBasicMaterial({ color: colorHex });
+      const dotMesh = new THREE.Mesh(dotGeo, dotMat);
+      dotMesh.position.set(dotStartX + (idx * dotSpacing), toolbarMesh.position.y, 0.068);
+      browserGroup.add(dotMesh);
+    });
+
+    // Subtle Recessed Address Bar Pill
+    const addressWidth = 1.9;
+    const addressHeight = 0.18;
+    const addressGeo = new THREE.PlaneGeometry(addressWidth, addressHeight);
+    addressMesh = new THREE.Mesh(addressGeo, addressMat);
+    addressMesh.position.set(0.12, toolbarMesh.position.y, 0.068);
+    browserGroup.add(addressMesh);
+
+    // Project Screenshot Screen (16:10 ratio, 4.66 x 2.40)
+    const screenWidth = toolbarWidth;
+    const screenHeight = frameHeight - toolbarHeight - 0.20;
+    const screenGeo = new THREE.PlaneGeometry(screenWidth, screenHeight);
+
+    // Load authentic project capture with sRGB color handling
+    const textureLoader = new THREE.TextureLoader();
+    textureLoader.load(
+      'siparch_preview.png',
+      (projectTexture) => {
+        projectTexture.generateMipmaps = true;
+        projectTexture.minFilter = THREE.LinearMipmapLinearFilter;
+        if (projectTexture.encoding !== undefined) {
+          projectTexture.encoding = THREE.sRGBEncoding;
+        }
+
+        // Unlit emissive screen material for 100% crystal-clear readability
+        const screenMat = new THREE.MeshBasicMaterial({
+          map: projectTexture,
+          toneMapped: false
+        });
+
+        screenMesh = new THREE.Mesh(screenGeo, screenMat);
+        screenMesh.position.set(0, - (toolbarHeight / 2) - 0.04, 0.065);
+        browserGroup.add(screenMesh);
+
+        // First render
+        renderer.render(scene, camera);
+        isSceneReady = true;
+
+        // Hide fallback only after successful 3D scene creation & texture rendering
+        if (fallback) {
+          fallback.style.display = 'none';
+        }
+      },
+      undefined,
+      (err) => {
+        console.warn('Project screenshot failed to load; retaining accessible fallback mockup.', err);
+      }
+    );
+
+    // Soft Physical Shadow Plane underneath
+    const shadowCanvas = document.createElement('canvas');
+    shadowCanvas.width = 128;
+    shadowCanvas.height = 128;
+    const sCtx = shadowCanvas.getContext('2d');
+    const gradient = sCtx.createRadialGradient(64, 64, 10, 64, 64, 64);
+    gradient.addColorStop(0, 'rgba(0, 0, 0, 0.35)');
+    gradient.addColorStop(0.5, 'rgba(124, 58, 237, 0.15)');
+    gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    sCtx.fillStyle = gradient;
+    sCtx.fillRect(0, 0, 128, 128);
+
+    const shadowTex = new THREE.CanvasTexture(shadowCanvas);
+    const shadowGeo = new THREE.PlaneGeometry(5.4, 2.4);
+    const shadowMat = new THREE.MeshBasicMaterial({
+      map: shadowTex,
+      transparent: true,
+      opacity: isDark ? 0.75 : 0.55,
+      depthWrite: false
+    });
+
+    shadowMesh = new THREE.Mesh(shadowGeo, shadowMat);
+    shadowMesh.position.set(0, -1.85, -0.15);
+    shadowMesh.rotation.x = -Math.PI / 2.3;
+    scene.add(shadowMesh);
+
+    // Initial group positioning & pose
+    browserGroup.rotation.set(baseRotX, baseRotY, baseRotZ);
+    scene.add(browserGroup);
+
+    // Append canvas into container
+    renderer.domElement.style.position = 'absolute';
+    renderer.domElement.style.top = '0';
+    renderer.domElement.style.left = '0';
+    renderer.domElement.style.width = '100%';
+    renderer.domElement.style.height = '100%';
+    renderer.domElement.style.pointerEvents = 'none'; // Keeps container touch-scrolling safe
+    container.appendChild(renderer.domElement);
+
+    // Dynamic Theme Material Switcher
+    update3DBrowserTheme = (theme) => {
+      const dark = theme === 'dark';
+      if (frameMat) frameMat.color.setHex(dark ? 0x141724 : 0xf1f3f9);
+      if (toolbarMat) toolbarMat.color.setHex(dark ? 0x1e2235 : 0xe2e8f0);
+      if (addressMat) addressMat.color.setHex(dark ? 0x0f111a : 0xffffff);
+      if (edgeMat) edgeMat.color.setHex(dark ? 0xa855f7 : 0x8b5cf6);
+      if (shadowMat) shadowMat.opacity = dark ? 0.75 : 0.55;
+    };
+
+    // 4. Pointer Interaction (Frame-rate independent damped tilt on .hero-stage)
     const handlePointerMove = (e) => {
-      if (prefersReducedMotion) return;
-      const rect = container.getBoundingClientRect();
-      const clientX = e.clientX || (e.touches && e.touches[0].clientX);
-      const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+      if (isReducedMotion) return;
+      // Skip touch events to allow seamless vertical touch scrolling
+      if (e.pointerType === 'touch') return;
 
-      if (clientX !== undefined && clientY !== undefined) {
-        const x = ((clientX - rect.left) / rect.width) * 2 - 1;
-        const y = -(((clientY - rect.top) / rect.height) * 2 - 1);
-        
-        targetRotY = x * 0.45;
-        targetRotX = -y * 0.35;
+      const rect = container.getBoundingClientRect();
+      if (rect.width > 0 && rect.height > 0) {
+        const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        const y = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
+
+        targetRotY = baseRotY + (x * 0.08); // ±4.5 degrees
+        targetRotX = baseRotX + (-y * 0.06); // ±3.5 degrees
       }
     };
 
-    container.addEventListener('mousemove', handlePointerMove, { passive: true });
-    container.addEventListener('touchmove', handlePointerMove, { passive: true });
-
-    container.addEventListener('mouseleave', () => {
-      targetRotX = 0;
-      targetRotY = 0;
+    container.addEventListener('pointermove', handlePointerMove, { passive: true });
+    container.addEventListener('pointerleave', () => {
+      targetRotX = baseRotX;
+      targetRotY = baseRotY;
     });
 
-    // 5. Scroll synchronization (tracks scroll through Hero)
+    // 5. Scroll Synchronization
     const heroSection = $('#home');
     const updateScrollSync = () => {
       if (heroSection) {
         const rect = heroSection.getBoundingClientRect();
         const heroHeight = rect.height;
         const scrolled = -rect.top;
-        scrollProgress = Math.max(0, Math.min(1, scrolled / heroHeight));
+        scrollProgress = Math.max(0, Math.min(1, scrolled / (heroHeight * 0.85)));
       }
     };
     window.addEventListener('scroll', updateScrollSync, { passive: true });
 
-    // 6. Resize handling
-    const handleResize = () => {
-      if (!container || !renderer || !camera) return;
-      const newWidth = container.clientWidth;
-      const newHeight = container.clientHeight;
-      if (newWidth > 0 && newHeight > 0) {
-        camera.aspect = newWidth / newHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(newWidth, newHeight);
-      }
-    };
-    window.addEventListener('resize', handleResize, { passive: true });
+    // 6. Resize Handling
+    window.addEventListener('resize', fitCamera, { passive: true });
 
-    // 7. Visibility Observer (Pauses rendering when Hero is off-screen)
+    // 7. Visibility Observer (Pauses rendering when Hero is off-screen or tab hidden)
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         isVisible = entry.isIntersecting;
         if (isVisible && !animFrameId) {
+          clock.getDelta(); // reset delta timer
           animate();
         }
       });
@@ -359,11 +515,12 @@ function init3DVoiceSculpture() {
     document.addEventListener('visibilitychange', () => {
       isVisible = !document.hidden;
       if (isVisible && !animFrameId) {
+        clock.getDelta(); // reset delta timer
         animate();
       }
     });
 
-    // 8. Animation Loop
+    // 8. Animation Loop (Frame-rate independent exponential damping)
     function animate() {
       if (!isVisible) {
         animFrameId = null;
@@ -372,30 +529,37 @@ function init3DVoiceSculpture() {
 
       animFrameId = requestAnimationFrame(animate);
 
-      const delta = clock.getDelta();
+      const delta = Math.min(clock.getDelta(), 0.1);
       const elapsedTime = clock.getElapsedTime();
 
-      if (!prefersReducedMotion) {
-        // Continuous organic idle wave motion
-        waveRibbon.rotation.x = elapsedTime * 0.22 + (scrollProgress * 1.8);
-        waveRibbon.rotation.y = elapsedTime * 0.35 + (scrollProgress * 2.4);
+      if (!isReducedMotion) {
+        // Subtle vertical floating drift
+        const floatOffset = Math.sin(elapsedTime * 1.2) * 0.06;
+        const rollOffset = Math.sin(elapsedTime * 0.9) * 0.01;
+        browserGroup.position.y = floatOffset;
 
-        innerCore.rotation.x = -elapsedTime * 0.45;
-        innerCore.rotation.y = elapsedTime * 0.28;
+        // Frame-rate independent exponential smoothing
+        const decay = 7.5;
+        const lerpFactor = 1.0 - Math.exp(-decay * delta);
+        currentRotX += (targetRotX - currentRotX) * lerpFactor;
+        currentRotY += (targetRotY - currentRotY) * lerpFactor;
 
-        particleWave.rotation.y = elapsedTime * 0.12;
-        particleWave.rotation.z = Math.sin(elapsedTime * 0.3) * 0.15;
+        // Scroll choreography: transitions toward front-facing view as hero scrolls
+        const scrollRotY = currentRotY * (1.0 - (scrollProgress * 0.8));
+        const scrollRotX = currentRotX * (1.0 - (scrollProgress * 0.5));
+        const scrollScale = 1.0 - (scrollProgress * 0.06);
 
-        // Damped mouse response
-        currentRotX += (targetRotX - currentRotX) * 0.08;
-        currentRotY += (targetRotY - currentRotY) * 0.08;
+        browserGroup.rotation.x = scrollRotX;
+        browserGroup.rotation.y = scrollRotY;
+        browserGroup.rotation.z = baseRotZ + rollOffset;
+        browserGroup.scale.set(scrollScale, scrollScale, scrollScale);
 
-        sculptureGroup.rotation.x = currentRotX;
-        sculptureGroup.rotation.y = currentRotY;
-
-        // Subtle scale transition with scroll
-        const targetScale = 1.0 - (scrollProgress * 0.15);
-        sculptureGroup.scale.set(targetScale, targetScale, targetScale);
+        // Shadow synchronization
+        shadowMesh.position.y = -1.85 + (floatOffset * 0.3);
+        shadowMesh.scale.set(1.0 - (floatOffset * 0.1), 1.0, 1.0);
+      } else {
+        browserGroup.rotation.set(baseRotX, baseRotY, baseRotZ);
+        browserGroup.position.set(0, 0, 0);
       }
 
       renderer.render(scene, camera);
@@ -404,15 +568,7 @@ function init3DVoiceSculpture() {
     animate();
 
   } catch (err) {
-    console.error('Failed to initialize 3D Voice Sculpture:', err);
-    container.innerHTML = `
-      <div class="stage-fallback">
-        <div class="waveform-bars">
-          <span></span><span></span><span></span><span></span><span></span>
-        </div>
-        <p>Interactive 3D Voice Sculpture</p>
-      </div>
-    `;
+    console.error('Failed to initialize 3D Floating Browser; retaining accessible fallback mockup:', err);
   }
 }
 
@@ -615,7 +771,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initNavigation();
   initTheme();
   initTypewriter();
-  init3DVoiceSculpture();
+  init3DFloatingBrowser();
   initProjectFilters();
   initAIAssistant();
 });
